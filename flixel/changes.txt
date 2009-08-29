@@ -1,0 +1,80 @@
+v1.25
+===================================================================
+Many thanks to flixel community member Nitram_Cero for the many
+suggestions, and to indie dev Farbs for helping me take out the
+"stupid giant invisible textbox" thing :)
+
+> Buttons no longer briefly appear anchored in the upper left corner
+> Fixed FlxTilemap collisions with non-0,0 position
+> Fixed FlxTilemap rendering issue with unbounded camera
+> FlxCore moved out of data to main folder
+> Stupid giant invisible textbox no longer required for focus control
+> Moved collide() into FlxCore
+> Moved collideArray/s() and overlapArray/s() into FlxG
+> collideArray/s() and overlapArray/s() self-check now
+> Added onEmit() function to FlxSprite
+> Optimized FlxSprite rendering a bit
+> Fixed bug in per-pixel overlapPoint()
+> Added alpha to FlxSprite (without falling back on vector renderer!)
+> Added scaling to FlxSprite (display only, bounding box must be scaled manually)
+> Fullscreen mode (BETA): Esc to toggle, TAB for Button A, SPACE for Button B
+> NOTE: Fullscreen mode requires special "allowFullScreen" HTML property
+> FlxSprite's facing variable uses getters, setters and consts now!
+
+
+
+v1.21
+===================================================================
+Thanks to SeiferTim from the flixel community for spotting the
+tilemap bug, and reminding me to put in the other function too!
+
+> Fixed tilemap display bug on certain non-square levels
+> Added "specificFrame" function to FlxSprite (like randomFrame)
+
+NOTE: FlxSprite.specificFrame is NOT documented in nanodoc!
+
+
+
+v1.2
+===================================================================
+Big thanks to the flixel community for helping to
+debug v1.1 and for helping to design v1.2!
+
+> Fixed bug with facing & proc-gen box sprites
+> Added FlxGame constructor param for skipping Flixel logo
+> Removed the deletes in FlxArray's "remove" functions
+> Simplified FlxArray "clear" function
+> Added null checks to overlap and collide functions
+> Fade and Flash need param Force == true to reset themselves
+> Flash has a callback now
+> FlxButtons use scrollFactor, visible, and flicker properly now
+> General corrections to the way overlap works with scrollfactor
+> Fixed pause music looping bug
+> FlxG.scores and FlxG.levels are flxarrays now
+> Doublechecked manual scroll manipulation
+> Added new class FlxLayer
+> FlxEmitter has optional parameter for parent FlxLayer
+> FlxEmitter will not auto-add pre-existing sprites
+> added new class FlxTilemap
+> added callback to FlxSprite animation system
+> fixed excessive frame calculation in FlxSprite animation
+> added new optional PlayStateTiles to Mode example code
+
+
+
+v1.1
+===================================================================
+First thanks to John Nesky, Ivan Safrin, radix, owen
+and the rest of the flixel community for
+helping to track this stuff down. 
+
+> Nasty manually-reversed animations bug fixed
+> Nasty music bug fixed
+> mouse cursor works properly with scrolling screens now
+> FlxEmitter can now shoot out more than one particle per frame
+> Fixed scrollFactor documentation
+> Documented animation FrameRate parameter
+> add keyword internal to a bunch of stuff in FlxG
+> add a force variable to FlxSprite.play()
+> SingleFrame parameter for animations removed, just use []
+> change name of 'alive' to 'active' (thanks radmoseph!)
