@@ -11,7 +11,7 @@ package com.adamatomic.flixel
 		private var _maxRotation:Number;
 		private var _gravity:Number;
 		private var _drag:Number;
-		private var _delay:Number;
+		public var _delay:Number;
 		private var _timer:Number;
 		private var _sprites:FlxArray;
 		private var _particle:uint;
