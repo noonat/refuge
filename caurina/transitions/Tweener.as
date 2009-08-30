@@ -725,6 +725,7 @@ package caurina.transitions {
 			var b:Number;					// beginning value
 			var c:Number;					// change in value
 			var d:Number; 					// duration (frames, seconds)
+			var f:Number;
 	
 			var pName:String;				// Property name, used in loops
 			var eventScope:Object;			// Event scope, used to call functions
@@ -747,12 +748,15 @@ package caurina.transitions {
 						c = tTweening.timeComplete - tTweening.timeStart;
 						d = tTweening.timeComplete - tTweening.timeStart;
 						nv = tTweening.transition(t, b, c, d);
+						f = t/d;
+						if (isNaN(f)) f = 1.0;
 	
 						if (cTime >= nv) {
 							if (Boolean(tTweening.onUpdate)) {
 								eventScope = Boolean(tTweening.onUpdateScope) ? tTweening.onUpdateScope : tScope;
 								try {
-									tTweening.onUpdate.apply(eventScope, tTweening.onUpdateParams);
+									if (tTweening.onUpdateParams) tTweening.onUpdate.apply(eventScope, tTweening.onUpdateParams);
+									else tTweening.onUpdate.call(eventScope, f);
 								} catch(e1:Error) {
 									handleError(tTweening, e1, "onUpdate");
 								}
@@ -812,6 +816,7 @@ package caurina.transitions {
 							if (isOver) {
 								// Tweening time has finished, just set it to the final value
 								nv = tProperty.valueComplete;
+								f = 1.0;
 							} else {
 								if (tProperty.hasModifier) {
 									// Modified
@@ -827,6 +832,8 @@ package caurina.transitions {
 									d = tTweening.timeComplete - tTweening.timeStart;
 									nv = tTweening.transition(t, b, c, d, tTweening.transitionParams);
 								}
+								f = t/d;
+								if (isNaN(f)) f = 1.0;
 							}
 
 							if (tTweening.rounded) nv = Math.round(nv);
@@ -844,7 +851,8 @@ package caurina.transitions {
 						if (Boolean(tTweening.onUpdate)) {
 							eventScope = Boolean(tTweening.onUpdateScope) ? tTweening.onUpdateScope : tScope;
 							try {
-								tTweening.onUpdate.apply(eventScope, tTweening.onUpdateParams);
+								if (tTweening.onUpdateParams) tTweening.onUpdate.apply(eventScope, tTweening.onUpdateParams);
+								else tTweening.onUpdate.call(eventScope, f);
 							} catch(e3:Error) {
 								handleError(tTweening, e3, "onUpdate");
 							}
