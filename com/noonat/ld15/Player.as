@@ -76,19 +76,19 @@ package com.noonat.ld15 {
 			_aimX = Math.cos(angle * (Math.PI / 180));
 			_aimY = Math.sin(angle * (Math.PI / 180));
 			
-			if (FlxG.kLeft) angularVelocity -= FlxG.elapsed * 80;
-			if (FlxG.kRight) angularVelocity += FlxG.elapsed * 80;
+			if (FlxG.kLeft) angularVelocity -= FlxG.elapsed * 120;
+			if (FlxG.kRight) angularVelocity += FlxG.elapsed * 120;
 			
-			var thrust:Number = 0;
-			if (FlxG.kUp) thrust += 50;
-			if (FlxG.kDown) thrust -= 50;
-			velocity.x += _aimX * thrust * FlxG.elapsed;
-			velocity.y += _aimY * thrust * FlxG.elapsed;
+			//var thrust:Number = 0;
+			//if (FlxG.kUp) thrust += 50;
+			//if (FlxG.kDown) thrust -= 50;
+			//velocity.x += _aimX * thrust * FlxG.elapsed;
+			//velocity.y += _aimY * thrust * FlxG.elapsed;
 			
 			if (FlxG.justPressed(FlxG.A)) shootBullet();
 			
 			super.update();
-			y += 40 * FlxG.elapsed;
+			//y += 40 * FlxG.elapsed;
 			
 			_light.xy(x + width / 2, y + height / 2);
 			_light.angle = angle;

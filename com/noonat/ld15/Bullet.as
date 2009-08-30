@@ -5,7 +5,7 @@ package com.noonat.ld15 {
 		public const COLOR:uint = 0xffffff00;
 		public const ELASTICITY:Number = 0.4;
 		public const GRAVITY:Number = 120;
-		public const SPEED:Number = 120;
+		public const SPEED:Number = 25;
 		public const SIZE:uint = 6;
 		private var _explosion:FlxEmitter;
 		private var _explosionSprites:FlxArray;
@@ -14,7 +14,7 @@ package com.noonat.ld15 {
 		
 		public function Bullet():void {
 			super(null, 0, 0, false, false, SIZE, SIZE, COLOR);
-			acceleration.y = 120;
+			acceleration.y = 0.5;
 			dead = true;
 			exists = false;
 			finished = false;
@@ -78,7 +78,7 @@ package com.noonat.ld15 {
 			this.y = y;
 			velocity.x = nx * SPEED;
 			velocity.y = ny * SPEED;
-			_life = 1;
+			_life = 2;
 			_light.xy(this.x, this.y);
 		}
 		
