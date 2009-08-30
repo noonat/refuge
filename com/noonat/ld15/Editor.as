@@ -26,19 +26,21 @@ package com.noonat.ld15 {
 		override public function update():void {
 			if (FlxG.consoleVisible) return;
 			if (FlxG.justPressed(FlxG.MOUSE)) {
+				//var ps:PlayState = FlxG.state as PlayState;
+				//ps._buildings.add(ps.add(new Building(FlxG.mouse.x, FlxG.mouse.y)));
 				if (!_block) startBlock();
 				else finishBlock();
 			}
 			if (_block) {
-				_bw = FlxG.mouse.x - _bx;
-				_bh = FlxG.mouse.y - _by;
+				_bw = Math.floor((FlxG.mouse.x - _bx) / 16) * 16;
+				_bh = Math.floor((FlxG.mouse.y - _by) / 4) * 4;
 			}
 		}
 		
 		internal function startBlock():void {
 			_block = true;
-			_bx = FlxG.mouse.x;
-			_by = FlxG.mouse.y;
+			_bx = Math.floor(FlxG.mouse.x / 16) * 16;
+			_by = Math.floor(FlxG.mouse.y / 4) * 4;
 			_bw = _bh = 1;
 		}
 		

@@ -11,6 +11,7 @@ package com.noonat.ld15 {
 		
 		public var lights:LightLayer;
 		
+		public var buildings:FlxArray;
 		private var _blocks:FlxArray;
 		private var _creatures:FlxArray;
 		private var _creatureTimer:Number=CREATURE_TIMER;
@@ -23,6 +24,12 @@ package com.noonat.ld15 {
 			
 			lights = new LightLayer();
 			
+			_playerBullets = new FlxArray();
+			_player = this.add(new Player(_playerBullets)) as Player;
+			_player.angle = 270;
+			_player.x = FlxG.width / 2 - _player.width / 2;
+			_player.y = 495;
+			
 			_blocks = new FlxArray();
 			_blocks.add(this.add(newBlock( 0,-10, 6, 11)));
 			_blocks.add(this.add(newBlock( 9,-10, 6, 11)));
@@ -32,30 +39,31 @@ package com.noonat.ld15 {
 			_blocks.add(this.add(newBlock(-3,  2, 3, 1)));
 			_blocks.add(this.add(newBlock( 0,  3, 2, 2)));
 			_blocks.add(this.add(newBlock(-2,  3, 2, 2)));
-			_blocks.add(this.add(newBlock( 0,  5, 1, 13)));
-			_blocks.add(this.add(newBlock(-1,  5, 1, 13)));
-			_blocks.add(this.add(newBlock( 0, 18, 2, 1)));
-			_blocks.add(this.add(newBlock(-2, 18, 2, 1)));
+			_blocks.add(this.add(newBlock( 0,  5, 1, 14)));
+			_blocks.add(this.add(newBlock(-1,  5, 1, 14)));
 			_blocks.add(this.add(newBlock( 0, 19, 15, 1)));
 			
 			var MOARBLOCKS:Array = [
-				[163, 538, 186, 73],
-				[341, 569, 62, 45],
-				[393, 562, 46, 47],
-				[422, 542, 50, 51],
-				[115, 586, 69, 40],
-				[39, 562, 97, 61],
-				[17, 530, 51, 64],
-				[24, 495, 19, 42],
-				[152, 580, 22, 19],
-				[157, 568, 10, 19],
-				[344, 554, 22, 21],
-				[363, 565, 19, 8],
-				[438, 502, 16, 49],
-				[176, 532, 53, 21],
-				[221, 532, 119, 24],
-				[213, 519, 84, 29],
-				[291, 529, 31, 12],
+				[32, 496, 16, 112],
+				[48, 532, 32, 76],
+				[80, 564, 48, 44],
+				[128, 576, 32, 32],
+				[160, 564, 16, 44],
+				[176, 548, 16, 60],
+				[192, 532, 32, 76],
+				[224, 524, 80, 84],
+				[304, 532, 16, 76],
+				[320, 540, 16, 68],
+				[336, 548, 32, 60],
+				[368, 568, 32, 40],
+				[400, 556, 32, 52],
+				[416, 540, 32, 68],
+				[432, 504, 16, 40],
+				[176, 544, 16, 8],
+				[176, 536, 16, 12],
+				[160, 548, 16, 20],
+				[128, 568, 32, 12],
+				[352, 560, 48, 12],
 				[398, 91, 26, 33],
 				[440, 157, 18, 49],
 				[71, 59, 49, 22],
@@ -70,13 +78,23 @@ package com.noonat.ld15 {
 				_blocks.add(this.add(new Block(b[0], b[1], b[2], b[3], 0xff333333)));
 			}
 			
-			_editor = new Editor();
+			/*
+			var y:int=592;
+			for (var x:int=32; x < FlxG.width - 32; x += 16) {
+				var r:Number = Math.random();
+				if (y > 608) y = 608;
+				if (y == 608) continue;
+				_blocks.add(this.add(new Block(x, y, 16, 608-y, 0xff333333)));
+				if (r < 0.3) y += 4;
+				else if (r < 0.6) y -= 4;
+				//if (by < 608)
+				//var building:Building = new Building(x, 0);
+				//building.y = 608 - building.height;
+				//buildings.add(this.add(building));
+			}
+			*/
 			
-			_playerBullets = new FlxArray();
-			_player = this.add(new Player(_playerBullets)) as Player;
-			_player.angle = 270;
-			_player.x = FlxG.width / 2 - _player.width / 2;
-			_player.y = 500;
+			_editor = new Editor();
 			
 			var lx:Array = [
 				FlxG.width / 4,
@@ -89,6 +107,42 @@ package com.noonat.ld15 {
 			lights.add(new Light(lx[1], ly, ls*2, 0, 0.2));
 			lights.add(new Light(lx[1], ly, ls, 0, 0.3));
 			_creatures = new FlxArray();
+
+			var MOARBUILDINGS:Array = [
+				[ 32, 481, 2],
+				[ 48, 516, 3],
+				[ 64, 516, 2],
+				[ 80, 548, 3],
+				[ 96, 548, 1],
+				[112, 548, 2],
+				[128, 552, 2],
+				[144, 552, 3],
+				[160, 532, 3],
+				[176, 521, 3],
+				[192, 516, 2],
+				[208, 516, 2],
+				[224, 508, 1],
+				[240, 508, 1],
+				[256, 508, 1],
+				[272, 508, 2],
+				[288, 508, 3],
+				[304, 516, 3],
+				[320, 524, 2],
+				[336, 532, 2],
+				[352, 532, 1],
+				[368, 545, 2],
+				[384, 545, 2],
+				[400, 540, 3],
+				[416, 524, 2],
+				[432, 488, 1],
+			];
+			buildings = new FlxArray();
+			for (i=0; i < MOARBUILDINGS.length; ++i) {
+				var h:Number = MOARBUILDINGS[i][2] * 16;
+				buildings.add(this.add(new Building(
+					MOARBUILDINGS[i][0], MOARBUILDINGS[i][1] - h + 16,
+					16, h)));
+			}
 		}
 		
 		public function newBlock(x:int, y:int, w:int, h:int, color:uint=0xff333333, alpha:Boolean=false):Block {
@@ -127,6 +181,11 @@ package com.noonat.ld15 {
 			bullet.hurt(1);
 		}
 		
+		internal function _onCreatureHitBuilding(a:Creature, b:Building):void {
+			if (a.dying) return;
+			b.kill();
+		}
+		
 		internal function _onCreatureHitCreature(a:Creature, b:Creature):void {
 			if (a.dying && b.dying) return;
 			else if (a.dying) b.kill();
@@ -149,8 +208,10 @@ package com.noonat.ld15 {
 			// update the rest of the world
 			super.update();
 			//FlxG.collideArray(_blocks, _player);
+			FlxG.collideArrays(_blocks, buildings);
 			FlxG.collideArrays(_blocks, _creatures);
 			FlxG.overlapArrays(_creatures, _creatures, _onCreatureHitCreature);
+			FlxG.overlapArrays(_creatures, buildings, _onCreatureHitBuilding);
 			_player.postCollide();
 			
 			// enable bullets again
