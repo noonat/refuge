@@ -1,4 +1,5 @@
 package com.noonat.ld15 {
+	import caurina.transitions.Tweener;
 	import com.adamatomic.flixel.*;
 	
 	public class Bullet extends FlxSprite {
@@ -70,7 +71,19 @@ package com.noonat.ld15 {
 			_explosion.reset();
 		}
 		
-		override public function kill():void { super.kill(); _light.fadeOut(); }
+		override public function kill():void {
+			super.kill();
+			Tweener.addTween(_light, {
+				scale:1, time:1,
+				transition:'linear',
+				onComplete: function():void {
+					_light.kill();
+				},
+				onUpdate: function(t:Number):void {
+					_light.alpha = Math.random();
+				}
+			});
+		}
 		
 		public function shoot(x:Number, y:Number, nx:Number, ny:Number):void {
 			spawn();
@@ -79,6 +92,7 @@ package com.noonat.ld15 {
 			velocity.x = nx * SPEED;
 			velocity.y = ny * SPEED;
 			_life = 2;
+			_light.scale = SIZE*4;
 			_light.xy(this.x, this.y);
 		}
 		

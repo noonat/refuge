@@ -123,6 +123,7 @@ package com.noonat.ld15 {
 			// update the rest of the world
 			super.update();
 			FlxG.collideArray(_blocks, _player);
+			FlxG.collideArrays(_blocks, _creatures);
 			_player.postCollide();
 			
 			// enable bullets again

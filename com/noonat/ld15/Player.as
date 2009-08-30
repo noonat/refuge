@@ -68,7 +68,7 @@ package com.noonat.ld15 {
 		
 		public function shootBullet():FlxSprite {
 			var bullet:Bullet = _bullets.getNonexist() as Bullet;
-			if (!bullet) bullet = _bullets.add(FlxG.state.add(new Bullet())) as Bullet;
+			if (!bullet) return null;//bullet = _bullets.add(FlxG.state.add(new Bullet())) as Bullet;
 			bullet.shoot(_muzzle.x, _muzzle.y, _aimX, _aimY);
 			return bullet;
 		}

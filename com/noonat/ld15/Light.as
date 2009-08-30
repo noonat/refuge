@@ -32,17 +32,6 @@ package com.noonat.ld15 {
 			_transform = true;
 		}
 		
-		public function fadeOut(duration:Number=1.0):void {
-			Tweener.addTween(this, {
-				alpha:0.0,
-				time:1,
-				transition:'linear',
-				onComplete: function():void {
-					kill();
-				}
-			});
-		}
-		
 		override public function kill():void { super.kill(); }
 		
 		public function renderInto(mask:BitmapData, colorTransform:ColorTransform):void {
