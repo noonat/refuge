@@ -12,6 +12,7 @@ package com.noonat.ld15 {
 		
 		private var _blocks:FlxArray;
 		private var _creatures:FlxArray;
+		private var _editor:Editor;
 		private var _player:Player;
 		private var _playerBullets:FlxArray;
 		
@@ -67,6 +68,8 @@ package com.noonat.ld15 {
 				_blocks.add(this.add(new Block(b[0], b[1], b[2], b[3], 0xff333333)));
 			}
 			
+			_editor = new Editor();
+			
 			_playerBullets = new FlxArray();
 			_player = this.add(new Player(_playerBullets)) as Player;
 			_player.angle = 270;
@@ -102,65 +105,43 @@ package com.noonat.ld15 {
 		override public function render():void {
 			super.render();
 			lights.render();
-			renderBlock();
+			_editor.render();
+		}
+		
+		internal function _onCreatureHitBullet(creature:Creature, bullet:Bullet):void {
+			creature.kill();
 		}
 		
 		override public function update():void {
 			var b:Bullet;
+			
+			// disable the bullets before the update
 			for (var i:uint=0; i < _playerBullets.length; ++i) {
 				if (_playerBullets[i]) _playerBullets[i].active = false;
 			}
+			
+			// update the rest of the world
 			super.update();
 			FlxG.collideArray(_blocks, _player);
 			_player.postCollide();
+			
+			// enable bullets again
 			for (i=0; i < _playerBullets.length; ++i) {
 				if (_playerBullets[i]) _playerBullets[i].active = true;
 			}
+			// tick over the bullets a couple times
+			// we have to tick these manually because of collision issues
 			for (var j:uint=0; j < 16; ++j) {
 				for (i=0; i < _playerBullets.length; ++i) {
 					b = _playerBullets[i];
 					if (b && b.exists && b.active) b.update();
 				}
 				FlxG.collideArrays(_blocks, _playerBullets);
+				FlxG.overlapArrays(_creatures, _playerBullets, _onCreatureHitBullet);
 			}
+			
 			lights.update();
-			updateBlock();
-		}
-		
-		private var _block:Boolean=false;
-		private var _bx:Number, _by:Number, _bw:Number, _bh:Number;
-		internal function renderBlock():void {
-			if (!_block) return;
-			FlxG.buffer.fillRect(new Rectangle(
-				_bw < 0 ? _bx + _bw : _bx,
-				_bh < 0 ? _by + _bh : _by,
-				Math.abs(_bw), Math.abs(_bh)), 0xffff0000);
-		}
-		internal function updateBlock():void {
-			if (FlxG.consoleVisible) return;
-			if (FlxG.justPressed(FlxG.MOUSE)) {
-				if (!_block) startBlock();
-				else finishBlock();
-			}
-			if (_block) {
-				_bw = FlxG.mouse.x - _bx;
-				_bh = FlxG.mouse.y - _by;
-			}
-		}
-		internal function startBlock():void {
-			_block = true;
-			_bx = FlxG.mouse.x;
-			_by = FlxG.mouse.y;
-			_bw = _bh = 1;
-		}
-		internal function finishBlock():void {
-			if (_bw < 0) _bx += _bw;
-			if (_bh < 0) _by += _bh;
-			_bw = Math.abs(_bw);
-			_bh = Math.abs(_bh);
-			_blocks.add(this.add(new Block(_bx, _by, _bw, _bh, 0xffff0000)));
-			FlxG.log('['+[_bx,_by,_bw,_bh].join(', ')+'],')
-			_block = false;
+			_editor.update();
 		}
 	}
 }
