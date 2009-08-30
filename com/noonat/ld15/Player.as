@@ -7,7 +7,7 @@ package com.noonat.ld15 {
 		private const COLOR:uint = 0xff661100;
 		private const COLOR_LIGHT:uint = 0xffffff99;
 		private const DEBOUNCE:Number = 0.8;
-		private const SIZE:uint = 16;
+		private const SIZE:uint = 24;
 		
 		private var _aim:Number = 0;
 		private var _aimX:Number = 0;
@@ -77,8 +77,8 @@ package com.noonat.ld15 {
 			_aimX = Math.cos(angle * (Math.PI / 180));
 			_aimY = Math.sin(angle * (Math.PI / 180));
 			
-			if (FlxG.kLeft) angularVelocity -= FlxG.elapsed * 120;
-			if (FlxG.kRight) angularVelocity += FlxG.elapsed * 120;
+			if (FlxG.kLeft) angle -= FlxG.elapsed * 120;
+			if (FlxG.kRight) angle += FlxG.elapsed * 120;
 			
 			//var thrust:Number = 0;
 			//if (FlxG.kUp) thrust += 50;

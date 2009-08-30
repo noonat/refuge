@@ -39,6 +39,7 @@ package com.noonat.ld15 {
 				null, 0, false // sheet, quantity, multiple
 			)) as FlxEmitter;
 			_light = new Light(0, 0, SIZE*4, 0);
+			_light.kill();
 			(FlxG.state as PlayState).lights.add(_light);
 		}
 		
@@ -101,6 +102,7 @@ package com.noonat.ld15 {
 		override public function update():void {
 			_light.xy(this.x+this.width/2, this.y+this.height/2);
 			if (dead && !exists) return;
+			else if (!onScreen()) kill();
 			else super.update();
 		}
 	}

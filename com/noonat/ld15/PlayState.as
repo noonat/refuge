@@ -6,12 +6,14 @@ package com.noonat.ld15 {
 	
 	public class PlayState extends FlxState {
 		private const COLOR_WATER:uint = 0x33000066;
+		private const CREATURE_TIMER:Number=1;
 		private const SIZE_BLOCK:uint = 32;
 		
 		public var lights:LightLayer;
 		
 		private var _blocks:FlxArray;
 		private var _creatures:FlxArray;
+		private var _creatureTimer:Number=CREATURE_TIMER;
 		private var _editor:Editor;
 		private var _player:Player;
 		private var _playerBullets:FlxArray;
@@ -22,8 +24,8 @@ package com.noonat.ld15 {
 			lights = new LightLayer();
 			
 			_blocks = new FlxArray();
-			_blocks.add(this.add(newBlock( 0,  0, 6, 1)));
-			_blocks.add(this.add(newBlock( 9,  0, 6, 1)));
+			_blocks.add(this.add(newBlock( 0,-10, 6, 11)));
+			_blocks.add(this.add(newBlock( 9,-10, 6, 11)));
 			_blocks.add(this.add(newBlock( 0,  1, 4, 1)));
 			_blocks.add(this.add(newBlock(-4,  1, 4, 1)));
 			_blocks.add(this.add(newBlock( 0,  2, 3, 1)));
@@ -74,32 +76,36 @@ package com.noonat.ld15 {
 			_player = this.add(new Player(_playerBullets)) as Player;
 			_player.angle = 270;
 			_player.x = FlxG.width / 2 - _player.width / 2;
-			_player.y = 503;
+			_player.y = 500;
 			
+			var lx:Array = [
+				FlxG.width / 4,
+				_player.x,
+				FlxG.width - (FlxG.width / 4)];
+			var ly:Number = _player.y;
+			var ls:Number = 100;
+			var la:Number = 0.3;
+			lights.add(new Light(lx[1], ly, ls*4, 0, 0.1));
+			lights.add(new Light(lx[1], ly, ls*2, 0, 0.2));
+			lights.add(new Light(lx[1], ly, ls, 0, 0.3));
 			_creatures = new FlxArray();
-			var creature:Creature;
-			for (i=0; i < 50; ++i) {
-				creature = new Creature();
-				creature.angle = Math.random() * 360;
-				for (var j:uint=0; j < 5; ++j) {
-					creature.y = 50 + 350 * Math.random();
-					if (creature.y < 100) creature.x = 130 + Math.random() * 200;
-					else if (creature.y < 170) creature.x = 90 + Math.random() * 300;
-					else creature.x = 60 + 370 * Math.random();
-					for (var k:uint=0; k < _creatures.length; ++k) {
-						if (creature.overlaps(_creatures[k])) break;
-					}
-					if (k == _creatures.length) break;
-				}
-				_creatures.add(creature);
-				this.add(creature);
-			}
 		}
 		
 		public function newBlock(x:int, y:int, w:int, h:int, color:uint=0xff333333, alpha:Boolean=false):Block {
 			if (x < 0) x += 15;
-			if (y < 0) y += 20;
 			return new Block(x*SIZE_BLOCK, y*SIZE_BLOCK, w*SIZE_BLOCK, h*SIZE_BLOCK, color, alpha);
+		}
+		
+		public function newCreature():Creature {
+			var creature:Creature = new Creature();
+			creature.angle = Math.random() * 360;
+			for (var j:uint=0; j < 5; ++j) {
+				creature.x = 6*SIZE_BLOCK + Math.random() * (3*SIZE_BLOCK - creature.width);
+				creature.y = -9*SIZE_BLOCK + Math.random() * 9*SIZE_BLOCK;//50 + 350 * Math.random();
+			}
+			_creatures.add(creature);
+			this.add(creature);
+			return creature;
 		}
 		
 		override public function render():void {
@@ -109,10 +115,30 @@ package com.noonat.ld15 {
 		}
 		
 		internal function _onCreatureHitBullet(creature:Creature, bullet:Bullet):void {
-			creature.kill();
+			if (!creature.dying) {
+				creature.kill();
+				creature.velocity.x += bullet.velocity.x;
+				creature.velocity.y += bullet.velocity.y;
+			}
+			else {
+				creature.velocity.x += bullet.velocity.x * 0.5;
+				creature.velocity.y += bullet.velocity.y * 0.5;
+			}
+			bullet.hurt(1);
+		}
+		
+		internal function _onCreatureHitCreature(a:Creature, b:Creature):void {
+			if (a.dying && b.dying) return;
+			else if (a.dying) b.kill();
+			else if (b.dying) a.kill();
 		}
 		
 		override public function update():void {
+			_creatureTimer -= FlxG.elapsed;
+			if (_creatureTimer <= 0) {
+				_creatureTimer = CREATURE_TIMER;
+				newCreature();
+			}
 			var b:Bullet;
 			
 			// disable the bullets before the update
@@ -122,8 +148,9 @@ package com.noonat.ld15 {
 			
 			// update the rest of the world
 			super.update();
-			FlxG.collideArray(_blocks, _player);
+			//FlxG.collideArray(_blocks, _player);
 			FlxG.collideArrays(_blocks, _creatures);
+			FlxG.overlapArrays(_creatures, _creatures, _onCreatureHitCreature);
 			_player.postCollide();
 			
 			// enable bullets again

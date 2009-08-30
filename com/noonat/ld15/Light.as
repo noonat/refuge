@@ -13,7 +13,7 @@ package com.noonat.ld15 {
 		private var _transform:Boolean=false;
 		private var _scale:Number=1;
 		
-		public function Light(X:Number=0, Y:Number=0, Scale:Number=1, Angle:Number=0) {
+		public function Light(X:Number=0, Y:Number=0, Scale:Number=1, Angle:Number=0, Alpha:Number=1.0) {
 			super();
 			shape = new Shape();
 			shape.graphics.beginFill(0x000000, 1.0);
@@ -21,6 +21,7 @@ package com.noonat.ld15 {
 			shape.graphics.endFill();
 			matrix = new Matrix();
 			xy(X, Y);
+			alpha = Alpha;
 			angle = Angle;
 			scale = Scale;
 			visible = false;

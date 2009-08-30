@@ -13,6 +13,8 @@ package com.noonat.ld15 {
 		private var _m:Matrix, _p:Point, _r:Rectangle;
 		private var _mask:BitmapData;
 		private var _pixels:BitmapData;
+		private var _gradient:Shape;
+		private var _gradientm:Matrix;
 		
 		function LightLayer():void {
 			_m = new Matrix();
@@ -21,12 +23,24 @@ package com.noonat.ld15 {
 			_r = new Rectangle(0, 0, Math.floor(FlxG.width*SCALE), Math.floor(FlxG.height*SCALE));
 			_mask = new BitmapData(_r.width, _r.height);
 			_pixels = new BitmapData(_r.width, _r.height, true, 0xffffffff);
+			_gradientm = new Matrix();
+			_gradientm.createGradientBox(_r.height * 2, _r.height * 2, 270 * (Math.PI/180), (_r.height*2 - _r.width)*-0.5);
+			_gradient = new Shape();
+			_gradient.graphics.beginGradientFill(GradientType.RADIAL,
+				[0x000000 + (Math.floor(ALPHA * alpha) & 0xff), 0x0000ff],
+				[1, 1],
+				[240, 255],
+				_gradientm);
+			_gradient.graphics.drawRect(0, 0, _r.width, _r.height);
+			_gradient.graphics.endFill();
+			_gradient.cacheAsBitmap = true;
 		}
 		
 		override public function render():void {
 			// draw masks for all the lights
 			var colorTransform:ColorTransform = new ColorTransform();
 			_mask.fillRect(_r, 0xff000000 + (Math.floor(ALPHA * alpha) & 0xff));
+			_mask.draw(_gradient);
 			for (var i:uint=0, l:uint=_children.length; i < l; ++i) {
 				var light:Light = _children[i] as Light;
 				if (light.exists) light.renderInto(_mask, colorTransform);
