@@ -51,7 +51,7 @@ package com.adamatomic.flixel
 		private var _p:Point;
 		private var _pZero:Point;
 		public var pixels:BitmapData;
-		private var _pixels:BitmapData;
+		protected var _pixels:BitmapData;
 		private var _alpha:Number;
 		
 		//@desc		Constructor

@@ -11,6 +11,7 @@ package com.noonat.ld15 {
 		public var lights:LightLayer;
 		
 		private var _blocks:FlxArray;
+		private var _creatures:FlxArray;
 		private var _player:Player;
 		private var _playerBullets:FlxArray;
 		
@@ -71,6 +72,25 @@ package com.noonat.ld15 {
 			_player.angle = 270;
 			_player.x = FlxG.width / 2 - _player.width / 2;
 			_player.y = 503;
+			
+			_creatures = new FlxArray();
+			var creature:Creature;
+			for (i=0; i < 50; ++i) {
+				creature = new Creature();
+				creature.angle = Math.random() * 360;
+				for (var j:uint=0; j < 5; ++j) {
+					creature.y = 50 + 350 * Math.random();
+					if (creature.y < 100) creature.x = 130 + Math.random() * 200;
+					else if (creature.y < 170) creature.x = 90 + Math.random() * 300;
+					else creature.x = 60 + 370 * Math.random();
+					for (var k:uint=0; k < _creatures.length; ++k) {
+						if (creature.overlaps(_creatures[k])) break;
+					}
+					if (k == _creatures.length) break;
+				}
+				_creatures.add(creature);
+				this.add(creature);
+			}
 		}
 		
 		public function newBlock(x:int, y:int, w:int, h:int, color:uint=0xff333333, alpha:Boolean=false):Block {
@@ -98,7 +118,7 @@ package com.noonat.ld15 {
 			}
 			for (var j:uint=0; j < 16; ++j) {
 				for (i=0; i < _playerBullets.length; ++i) {
-					var b:Bullet = _playerBullets[i];
+					b = _playerBullets[i];
 					if (b && b.exists && b.active) b.update();
 				}
 				FlxG.collideArrays(_blocks, _playerBullets);
