@@ -29,8 +29,8 @@ package com.noonat.ld15 {
 			maxVelocity.y = 100;
 			
 			_bullets = Bullets;
-			for (var i:int=0; i < 10; ++i) {
-				_bullets.add(FlxG.state.add(new Bullet()) as Bullet);
+			for (var i:int=0; i < 1; ++i) {
+				_bullets.add(FlxG.state.add(new Bullet()));
 			}
 			_light = new Light(0, 0, SIZE*4, 0);
 			(FlxG.state as PlayState).lights.add(_light);
@@ -68,7 +68,8 @@ package com.noonat.ld15 {
 		
 		public function shootBullet():FlxSprite {
 			var bullet:Bullet = _bullets.getNonexist() as Bullet;
-			if (bullet) bullet.shoot(_muzzle.x, _muzzle.y, _aimX, _aimY);
+			if (!bullet) bullet = _bullets.add(FlxG.state.add(new Bullet())) as Bullet;
+			bullet.shoot(_muzzle.x, _muzzle.y, _aimX, _aimY);
 			return bullet;
 		}
 		
