@@ -29,13 +29,7 @@ package com.noonat.ld15 {
 			_mask.fillRect(_r, 0xff000000 + (Math.floor(ALPHA * alpha) & 0xff));
 			for (var i:uint=0, l:uint=_children.length; i < l; ++i) {
 				var light:Light = _children[i] as Light;
-				if (light.exists) {
-					if (light.alpha != 1.0) {
-						colorTransform.alphaMultiplier = light.alpha;
-						_mask.draw(light.shape, light.matrix, colorTransform);
-					}
-					else _mask.draw(light.shape, light.matrix);
-				}
+				if (light.exists) light.renderInto(_mask, colorTransform);
 			}
 			
 			// blur them
