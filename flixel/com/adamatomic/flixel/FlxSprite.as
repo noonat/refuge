@@ -206,7 +206,7 @@ package com.adamatomic.flixel
 		
 		//@desc		Called when this object collides with a FlxBlock on one of its sides
 		//@return	Whether you wish the FlxBlock to collide with it or not
-		override public function hitWall():Boolean { velocity.x = 0; return true; }
+		override public function hitWall(movingRight:Boolean):Boolean { velocity.x = 0; return true; }
 		
 		//@desc		Called when this object collides with the top of a FlxBlock
 		//@return	Whether you wish the FlxBlock to collide with it or not

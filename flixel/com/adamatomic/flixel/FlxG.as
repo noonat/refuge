@@ -13,6 +13,7 @@ package com.adamatomic.flixel
 	//@desc		This is a global helper class full of useful functions for audio, input, basic info, and the camera system
 	public class FlxG
 	{
+		static public var time:Number;
 		//@desc Represents the amount of time in seconds that passed since last frame
 		static public var elapsed:Number;
 		//@desc A reference or pointer to the current FlxState object being used by the game

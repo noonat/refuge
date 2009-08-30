@@ -111,6 +111,33 @@ package com.adamatomic.flixel
 			if((Math.abs(Spr.x + (Spr.width>>1) - x - (width>>1)) > (width>>1) + (Spr.width>>1)) && (Math.abs(Spr.y + (Spr.height>>1) - y - (height>>1)) > (height>>1) + (Spr.height>>1)))
 				return;
 			
+			if((Spr.x > x) && (Spr.x + Spr.width < x + width))
+			{
+				if((Spr.y + Spr.height < y + (height>>1)) && (Spr.y + Spr.height > y) && Spr.hitFloor())
+				{
+					Spr.y = y - Spr.height;
+					return;
+				}	
+				if((Spr.y > y + (height>>1)) && (Spr.y < y + height) && Spr.hitCeiling())
+				{
+					Spr.y = y + height;
+					return;
+				}
+			}
+			if((Spr.y > y) && (Spr.y + Spr.height < y + height))
+			{
+				if((Spr.x + Spr.width < x + (width>>1)) && (Spr.x + Spr.width > x) && Spr.hitWall(true))
+				{
+					Spr.x = x - Spr.width;
+					return;
+				}	
+				if((Spr.x > x + (width>>1)) && (Spr.x < x + width) && Spr.hitWall(false))
+				{
+					Spr.x = x + width;
+					return;
+				}
+			}
+			
 			var yFirst:Boolean = true;
 			if((Math.abs(Spr.velocity.x) > Math.abs(Spr.velocity.y)))
 				yFirst = false;
@@ -144,7 +171,7 @@ package com.adamatomic.flixel
 				{
 					if(overlapsPoint(Spr.x,Spr.y + (Spr.height>>1)))
 					{
-						if(Spr.hitWall())
+						if(Spr.hitWall(false))
 							Spr.x = x + width;
 					}
 					else
@@ -154,7 +181,7 @@ package com.adamatomic.flixel
 				{
 					if(overlapsPoint(Spr.x + Spr.width,Spr.y + (Spr.height>>1)))
 					{
-						if(Spr.hitWall())
+						if(Spr.hitWall(true))
 							Spr.x = x - Spr.width;
 					}
 					else
@@ -167,7 +194,7 @@ package com.adamatomic.flixel
 				{
 					if(overlapsPoint(Spr.x,Spr.y + (Spr.height>>1)))
 					{
-						if(Spr.hitWall())
+						if(Spr.hitWall(false))
 							Spr.x = x + width;
 					}
 					else
@@ -177,7 +204,7 @@ package com.adamatomic.flixel
 				{
 					if(overlapsPoint(Spr.x + Spr.width,Spr.y + (Spr.height>>1)))
 					{
-						if(Spr.hitWall())
+						if(Spr.hitWall(true))
 							Spr.x = x - Spr.width;
 					}
 					else
@@ -229,9 +256,9 @@ package com.adamatomic.flixel
 					{
 						if((Spr.y + Spr.height - bias > y) && (Spr.y + bias < y + height))
 						{
-							if((Spr.velocity.x > 0) && (Spr.x + Spr.width > x) && (Spr.x + Spr.width < x + width) && Spr.hitWall())
+							if((Spr.velocity.x > 0) && (Spr.x + Spr.width > x) && (Spr.x + Spr.width < x + width) && Spr.hitWall(true))
 								Spr.x = x - Spr.width;
-							else if((Spr.velocity.x < 0) && (Spr.x > x) && (Spr.x < x + width) && Spr.hitWall())
+							else if((Spr.velocity.x < 0) && (Spr.x > x) && (Spr.x < x + width) && Spr.hitWall(false))
 								Spr.x = x + width;
 						}
 					}
@@ -242,9 +269,9 @@ package com.adamatomic.flixel
 					{
 						if((Spr.y + Spr.height - bias > y) && (Spr.y + bias < y + height))
 						{
-							if((Spr.velocity.x > 0) && (Spr.x + Spr.width > x) && (Spr.x + Spr.width < x + width) && Spr.hitWall())
+							if((Spr.velocity.x > 0) && (Spr.x + Spr.width > x) && (Spr.x + Spr.width < x + width) && Spr.hitWall(true))
 								Spr.x = x - Spr.width;
-							else if((Spr.velocity.x < 0) && (Spr.x > x) && (Spr.x < x + width) && Spr.hitWall())
+							else if((Spr.velocity.x < 0) && (Spr.x > x) && (Spr.x < x + width) && Spr.hitWall(false))
 								Spr.x = x + width;
 						}
 					}
@@ -274,9 +301,9 @@ package com.adamatomic.flixel
 			{
 				if((Spr.y + Spr.height - bias > y) && (Spr.y + bias < y + height))
 				{
-					if((Spr.velocity.x > 0) && (Spr.x + Spr.width > x) && (Spr.x + Spr.width < x + width) && Spr.hitWall())
+					if((Spr.velocity.x > 0) && (Spr.x + Spr.width > x) && (Spr.x + Spr.width < x + width) && Spr.hitWall(true))
 						Spr.x = x - Spr.width;
-					else if((Spr.velocity.x < 0) && (Spr.x > x) && (Spr.x < x + width) && Spr.hitWall())
+					else if((Spr.velocity.x < 0) && (Spr.x > x) && (Spr.x < x + width) && Spr.hitWall(false))
 						Spr.x = x + width;
 				}
 			}
@@ -284,7 +311,7 @@ package com.adamatomic.flixel
 		
 		//@desc		Called when this object collides with a FlxBlock on one of its sides
 		//@return	Whether you wish the FlxBlock to collide with it or not
-		virtual public function hitWall():Boolean { return true; }
+		virtual public function hitWall(movingRight:Boolean):Boolean { return true; }
 		
 		//@desc		Called when this object collides with the top of a FlxBlock
 		//@return	Whether you wish the FlxBlock to collide with it or not
@@ -299,6 +326,12 @@ package com.adamatomic.flixel
 		{
 			exists = false;
 			dead = true;
+		}
+		
+		virtual public function spawn():void
+		{
+			exists = true;
+			dead = false;
 		}
 		
 		//@desc		Tells this object to flicker for the number of seconds requested (0 = infinite, negative number tells it to stop)

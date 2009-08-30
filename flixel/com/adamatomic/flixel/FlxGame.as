@@ -319,6 +319,7 @@ package com.adamatomic.flixel
 			var t:uint = getTimer();
 			_elapsed = (t-_total)/1000;
 			_total = t;
+			FlxG.time = _total/1000;
 			FlxG.elapsed = _elapsed;
 			if(FlxG.elapsed > MAX_ELAPSED)
 				FlxG.elapsed = MAX_ELAPSED;

@@ -3,7 +3,7 @@ package com.adamatomic.flixel
 	//@desc		This is an organizational class that can update and render a bunch of FlxCore objects
 	public class FlxLayer extends FlxCore
 	{
-		private var _children:FlxArray;
+		protected var _children:FlxArray;
 
 		//@desc		Constructor		
 		virtual public function FlxLayer()
