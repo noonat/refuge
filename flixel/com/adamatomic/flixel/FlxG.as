@@ -24,6 +24,7 @@ package com.adamatomic.flixel
 		static public var levels:FlxArray;
 		static public var score:uint;
 		static public var scores:FlxArray;
+		static public var consoleVisible:Boolean=false;
 		
 		//@desc These are the constants for use with the Pressed and Releases functions
 		static public const LEFT:uint = 0;

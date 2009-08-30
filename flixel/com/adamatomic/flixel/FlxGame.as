@@ -129,7 +129,7 @@ package com.adamatomic.flixel
 			_elapsed = 0;
 			_total = 0;
 			_fpsUpdate = true;
-			flash.ui.Mouse.hide();
+			//flash.ui.Mouse.hide();
 			_logoComplete = false;
 			_f = null;
 			_quakeTimer = 0;
@@ -359,7 +359,7 @@ package com.adamatomic.flixel
 				else if(_consoleY < _gy*_z-FlxG.height*_z)
 				{
 					_consoleY = _gy*_z-FlxG.height*_z;
-					_console.visible = false;
+					FlxG.consoleVisible = _console.visible = false;
 				}
 				_console.y = Math.floor(_consoleY);
 				
@@ -531,7 +531,7 @@ package com.adamatomic.flixel
 				addChild(_fade);
 				
 				_console = new Sprite();
-				_console.visible = false;
+				FlxG.consoleVisible = _console.visible = false;
 				_console.x = _gx*_z;
 				_console.y = _gy*_z-FlxG.height*_z;
 				_consoleYT = _consoleY = _console.y;
@@ -754,12 +754,10 @@ package com.adamatomic.flixel
 		//@desc		This function is only used by the FlxGame class to do important internal management stuff
 		private function toggleConsole():void
 		{
-			if(_consoleYT == _gy*_z)
-				_consoleYT = _gy*_z-FlxG.height*_z;
-			else
-			{
+			if(_consoleYT == _gy*_z) _consoleYT = _gy*_z-FlxG.height*_z;
+			else {
 				_consoleYT = _gy*_z;
-				_console.visible = true;
+				FlxG.consoleVisible = _console.visible = true;
 			}
 		}
 		
