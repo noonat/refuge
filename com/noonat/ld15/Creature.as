@@ -9,6 +9,7 @@ package com.noonat.ld15 {
 		private const STATE_DESCENDING:int = 1;
 		private const STATE_ATTACKING:int = 2;
 		
+		public var chain:Object = null;
 		public var dying:Boolean = false;
 		private var _explosionSprites:FlxArray = new FlxArray();
 		private var _explosion:FlxEmitter;
@@ -34,7 +35,7 @@ package com.noonat.ld15 {
 			maxVelocity.y = 5;
 			velocity.x = Math.random() * 60 - 30;
 			
-			_downSpeed = 80;//5 + Math.random() * 20;
+			_downSpeed = 5 + Math.random() * 20;
 			
 			var g:Number=0xff669933;
 			_explosionSprites.add(new FlxSprite(null,0,0,false,false,3,3,g));

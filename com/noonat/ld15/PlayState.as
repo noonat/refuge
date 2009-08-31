@@ -164,21 +164,24 @@ package com.noonat.ld15 {
 				var scoreText:Array = [];
 				if (bullet.lifeTime > 4) {
 					score *= SCORE_LONG_SHOT_MUL;
-					scoreText.push('x'+SCORE_LONG_SHOT_MUL+' LONG SHOT');
+					//scoreText.push('x'+SCORE_LONG_SHOT_MUL+' LONG SHOT');
+					scoreText.push('LONG');
 				}
 				else if (bullet.lifeTime > 2) {
 					score *= SCORE_MED_SHOT_MUL;
-					scoreText.push('x'+SCORE_MED_SHOT_MUL+' MED SHOT');
+					//scoreText.push('x'+SCORE_MED_SHOT_MUL+' MED SHOT');
+					scoreText.push('MED');
 				}
 				if (bullet.bounces > 0) {
 					score *= SCORE_BOUNCE_MUL * bullet.bounces;
-					scoreText.push(
-						'x'+(SCORE_BOUNCE_MUL*bullet.bounces)+
-						' '+bullet.bounces+
-						' '+(bullet.bounces === 1 ? 'BOUNCE':'BOUNCES'));
+					//scoreText.push(
+					//	'x'+(SCORE_BOUNCE_MUL*bullet.bounces)+
+					//	' '+bullet.bounces+
+					//	' '+(bullet.bounces === 1 ? 'BOUNCE':'BOUNCES'));
+					if (scoreText.length == 0) scoreText.push('BOUNCE');
 				}
-				scoreText.push(String(score)+' PTS');
-				creature.setText(scoreText.join('\n'));
+				scoreText.unshift(String(score));
+				creature.setText(scoreText.join(' '));
 				FlxG.score += score;
 				creature.kill();
 				creature.velocity.x += bullet.velocity.x;
@@ -197,9 +200,26 @@ package com.noonat.ld15 {
 		}
 		
 		internal function _onCreatureHitCreature(a:Creature, b:Creature):void {
+			var killed:Creature;
 			if (a.dying && b.dying) return;
-			else if (a.dying) b.kill();
-			else if (b.dying) a.kill();
+			else if (a.dying) {
+				killed = b;
+				if (!a.chain) a.chain = {count:1};
+				killed.chain = a.chain;
+			}
+			else if (b.dying) {
+				killed = a;
+				if (!b.chain) b.chain = {count:1};
+				killed.chain = b.chain;
+			}
+			else return;
+			killed.kill();
+			++killed.chain.count;
+			var score:int = SCORE_CREATURE * killed.chain.count;
+			var scoreText:Array = [];
+			scoreText.push(String(score)+' CHAIN');
+			killed.setText(scoreText.join('\n'));
+			FlxG.score += score;
 		}
 		
 		override public function update():void {
