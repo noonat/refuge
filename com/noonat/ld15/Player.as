@@ -15,7 +15,7 @@ package com.noonat.ld15 {
 		private var _bullets:FlxArray;
 		private var _dirX:Number = 0;
 		private var _dirY:Number = 0;
-		private var _light:Light;
+		private var _lights:FlxArray;
 		private var _muzzle:FlxSprite;
 		private var _speed:Number;
 		
@@ -32,8 +32,12 @@ package com.noonat.ld15 {
 			for (var i:int=0; i < 1; ++i) {
 				_bullets.add(FlxG.state.add(new Bullet()));
 			}
-			_light = new Light(0, 0, SIZE*4, 0);
-			(FlxG.state as PlayState).lights.add(_light);
+			_lights = new FlxArray();
+			_lights.add(new Light(0, 0, SIZE*2, 0));
+			_lights.add(new Light(0, 0, SIZE*4, 0, 0.3));
+			_lights.add(new Light(0, 0, SIZE*8, 0, 0.2));
+			_lights.add(new Light(0, 0, SIZE*16, 0., 0.1));
+			for (i=0; i < _lights.length; ++i) (FlxG.state as PlayState).lights.add(_lights[i]);
 			_muzzle = new FlxSprite(null, 0, 0, false, false, SIZE/4, SIZE/4, COLOR_LIGHT);
 			FlxG.state.add(_muzzle);
 		}
@@ -91,8 +95,11 @@ package com.noonat.ld15 {
 			super.update();
 			//y += 40 * FlxG.elapsed;
 			
-			_light.xy(x + width / 2, y + height / 2);
-			_light.angle = angle;
+			for (var i:int=0; i < _lights.length; ++i) {
+				var s:Number = _lights[i].scale;
+				if (i === 0) s /= 2;
+				_lights[i].xy(x + width/2 + _aimX*s, y + _aimY*s)
+			}
 			
 			_muzzle.angle = angle;
 			_muzzle.x = (x + (width * 0.5)) - (_muzzle.width * 0.5);

@@ -1,4 +1,5 @@
 package com.noonat.ld15 {
+	import caurina.transitions.Tweener;
 	import com.adamatomic.flixel.*;
 	import flash.display.BitmapData;
 	import flash.geom.Rectangle;
@@ -12,6 +13,7 @@ package com.noonat.ld15 {
 		public var lights:LightLayer;
 		
 		public var buildings:FlxArray;
+		public var gameOver:Boolean;
 		private var _blocks:FlxArray;
 		private var _creatures:FlxArray;
 		private var _creatureTimer:Number=CREATURE_TIMER;
@@ -116,15 +118,11 @@ package com.noonat.ld15 {
 			_editor = new Editor();
 			
 			var lx:Array = [
-				FlxG.width / 4,
-				_player.x,
+				_player.x + _player.width / 2,
 				FlxG.width - (FlxG.width / 4)];
-			var ly:Number = _player.y;
+			var ly:Number = _player.y - _player.height*2;
 			var ls:Number = 100;
 			var la:Number = 0.3;
-			lights.add(new Light(lx[1], ly, ls*4, 0, 0.1));
-			lights.add(new Light(lx[1], ly, ls*2, 0, 0.2));
-			lights.add(new Light(lx[1], ly, ls, 0, 0.3));
 			_creatures = new FlxArray();
 		}
 		
@@ -213,6 +211,20 @@ package com.noonat.ld15 {
 			
 			lights.update();
 			_editor.update();
+			
+			if (!gameOver) {
+				for (i=0; i < buildings.length; ++i) {
+					if (!buildings[i].dead) break
+				}
+				if (i === buildings.length) {
+					this.add(new FlxText(0, FlxG.height/2, FlxG.width, 80, "GAME OVER\nScore: "+FlxG.score, 0xffffff, null, 16, "center"));
+					gameOver = true;
+					Tweener.addTween(lights, {
+						ALPHA:0xff, time:1,
+						transition:'linear'
+					});
+				}
+			}
 		}
 	}
 }

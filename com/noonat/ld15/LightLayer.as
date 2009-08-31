@@ -5,7 +5,7 @@ package com.noonat.ld15 {
 	import flash.geom.*;
 	
 	public class LightLayer extends FlxLayer {
-		public const ALPHA:uint = 0xcc;
+		public var ALPHA:uint = 0xcc;
 		public static var SCALE:Number = 1/3;
 		
 		public var alpha:Number = 1.0;
@@ -40,7 +40,7 @@ package com.noonat.ld15 {
 			// draw masks for all the lights
 			var colorTransform:ColorTransform = new ColorTransform();
 			_mask.fillRect(_r, 0xff000000 + (Math.floor(ALPHA * alpha) & 0xff));
-			_mask.draw(_gradient);
+			if (!(FlxG.state as PlayState).gameOver) _mask.draw(_gradient);
 			for (var i:uint=0, l:uint=_children.length; i < l; ++i) {
 				var light:Light = _children[i] as Light;
 				if (light.exists) light.renderInto(_mask, colorTransform);

@@ -33,7 +33,7 @@ package com.noonat.ld15 {
 		override public function hurt(Damage:Number):void {
 			if (dead || _dying) return;
 			_health -= Damage;
-			_hurtFlag = 2;
+			_hurtFlag = 5;
 			if (_health > 0) return;
 			kill();
 		}
