@@ -5,6 +5,7 @@ package com.noonat.ld15 {
 	import flash.geom.Rectangle;
 	
 	public class Building extends FlxSprite {
+		[Embed(source="../../../data/building_explode.mp3")] private var SndExplode:Class;
 		private var _dying:Boolean = false;
 		private var _health:int = 3;
 		private var _hurtFlag:int=0;
@@ -40,6 +41,7 @@ package com.noonat.ld15 {
 		
 		override public function kill():void {
 			if (dead || _dying) return;
+			FlxG.play(SndExplode, 0.7);
 			_dying = true;
 			var oldX:int = x;
 			Tweener.addTween(this, {

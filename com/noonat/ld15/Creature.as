@@ -5,6 +5,10 @@ package com.noonat.ld15 {
 	import flash.geom.*;
 	
 	public class Creature extends FlxSprite {
+		[Embed(source="../../../data/creature_hit.mp3")] private var SndHit:Class;
+		[Embed(source="../../../data/creature_explode.mp3")] private var SndExplode:Class;
+		[Embed(source="../../../data/creature_shoot2.mp3")] private var SndShoot:Class;
+		
 		private const STATE_SPAWNING:int = 0;
 		private const STATE_DESCENDING:int = 1;
 		private const STATE_ATTACKING:int = 2;
@@ -96,6 +100,7 @@ package com.noonat.ld15 {
 		
 		override public function kill():void {
 			if (dead || dying) return;
+			FlxG.play(SndHit);
 			maxVelocity.y = 80;
 			dying = true;
 			_explode(0.6);
@@ -106,6 +111,7 @@ package com.noonat.ld15 {
 		
 		override public function hitFloor():Boolean {
 			if (dying) {
+				FlxG.play(SndExplode, 0.4);
 				super.kill();
 				_explode(-1.5);
 				_flash(60);
@@ -232,6 +238,7 @@ package com.noonat.ld15 {
 				}
 			}
 			if (target) {
+				FlxG.play(SndShoot, 0.2);
 				_attacking = target;
 				_attackTime = FlxG.time + 1;
 			}

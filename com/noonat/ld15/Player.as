@@ -4,7 +4,7 @@ package com.noonat.ld15 {
 	import flash.geom.*;
 	
 	public class Player extends FlxSprite {
-		private const COLOR:uint = 0xff661100;
+		private const COLOR:uint = 0xff2b2213;//red: 0xff661100;
 		private const COLOR_LIGHT:uint = 0xffffff99;
 		private const DEBOUNCE:Number = 0.8;
 		private const SIZE:uint = 24;

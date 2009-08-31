@@ -3,6 +3,9 @@ package com.noonat.ld15 {
 	import com.adamatomic.flixel.*;
 	
 	public class Bullet extends FlxSprite {
+		[Embed(source="../../../data/bullet_explode.mp3")] private var SndExplode:Class;
+		[Embed(source="../../../data/bullet_shoot.mp3")] private var SndShoot:Class;
+		
 		public const COLOR:uint = 0xffffff00;
 		public const ELASTICITY:Number = 0.4;
 		public const GRAVITY:Number = 120;
@@ -66,6 +69,7 @@ package com.noonat.ld15 {
 		
 		override public function hurt(damage:Number):void {
 			if (dead) return;
+			FlxG.play(SndExplode, 0.7);
 			if (--_life > 0) return;
 			kill();
 			velocity.x = 0;
@@ -94,6 +98,7 @@ package com.noonat.ld15 {
 		}
 		
 		public function shoot(x:Number, y:Number, nx:Number, ny:Number):void {
+			FlxG.play(SndShoot, 0.2);
 			spawn();
 			this.bounces = 0;
 			this.x = x;
