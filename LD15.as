@@ -8,11 +8,11 @@ package {
 	public class LD15 extends FlxGame
 	{
 		private const FLIXEL_BACKGROUND:uint = 0xff111111;
-		private const FLIXEL_FOREGROUND:uint = 0xffccccff;
+		private const FLIXEL_FOREGROUND:uint = 0xffcccccc;
 		
 		public function LD15():void
 		{
-			super(480, 640, PlayState, 1, FLIXEL_BACKGROUND, false, FLIXEL_FOREGROUND);
+			super(480, 640, PlayState, 1, FLIXEL_BACKGROUND, true, FLIXEL_FOREGROUND);
 			help("Jump", "Shoot", "Nothing");
 		}
 	}

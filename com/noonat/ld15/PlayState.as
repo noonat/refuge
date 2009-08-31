@@ -122,7 +122,7 @@ package com.noonat.ld15 {
 				_blocks.add(this.add(new Block(b[0], b[1], b[2], b[3], 0xff333333)));
 			}
 						
-			_editor = new Editor();
+			//_editor = new Editor();
 			
 			var lx:Array = [
 				_player.x + _player.width / 2,
@@ -156,7 +156,7 @@ package com.noonat.ld15 {
 		override public function render():void {
 			super.render();
 			lights.render();
-			_editor.render();
+			//_editor.render();
 		}
 		
 		private const SCORE_CREATURE:int = 100;
@@ -273,7 +273,7 @@ package com.noonat.ld15 {
 			}
 			
 			lights.update();
-			_editor.update();
+			//_editor.update();
 			
 			if (!gameOver) {
 				for (i=0; i < buildings.length; ++i) {
