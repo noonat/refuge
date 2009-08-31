@@ -15,6 +15,7 @@ package com.noonat.ld15 {
 		private var _explosion:FlxEmitter;
 		private var _light:Light;
 		private var _attackLight:Light;
+		private var _downMultiplier:Number;
 		private var _downSpeed:Number;
 		private var _b:uint, _argb:uint;
 		private var _state:uint = STATE_SPAWNING;
@@ -24,6 +25,8 @@ package com.noonat.ld15 {
 		private var _attackTime:Number;
 		private var _nextAttackTime:Number=0;
 		private var _text:FlxText;
+		
+		public static var _baseDownSpeed:Number = 20;
 		
 		public function Creature() {
 			super(null, 0, 0, false, false, 20, 20, 0x00000000);
@@ -35,7 +38,7 @@ package com.noonat.ld15 {
 			maxVelocity.y = 5;
 			velocity.x = Math.random() * 60 - 30;
 			
-			_downSpeed = 5 + Math.random() * 20;
+			_downMultiplier = Math.random();
 			
 			var g:Number=0xff669933;
 			_explosionSprites.add(new FlxSprite(null,0,0,false,false,3,3,g));
@@ -176,6 +179,7 @@ package com.noonat.ld15 {
 		}
 		
 		override public function update():void {
+			_downSpeed = 5 + _downMultiplier * _baseDownSpeed;
 			_explosion.x = x;
 			_explosion.y = y;
 			if (dying) maxVelocity.y = 80;

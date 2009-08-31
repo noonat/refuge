@@ -7,7 +7,13 @@ package com.noonat.ld15 {
 	
 	public class PlayState extends FlxState {
 		private const COLOR_WATER:uint = 0x33000066;
-		private const CREATURE_TIMER:Number=1;
+		private static var CREATURE_TIMERS:Array=[
+			[50000, 0.5, 35],
+			[30000, 0.6, 30],
+			[20000, 0.7, 25],
+			[10000, 0.8, 20],
+			[5000, 0.9, 20],
+			[0, 1.0, 20]];
 		private const SIZE_BLOCK:uint = 32;
 		
 		public var lights:LightLayer;
@@ -16,7 +22,7 @@ package com.noonat.ld15 {
 		public var gameOver:Boolean;
 		private var _blocks:FlxArray;
 		private var _creatures:FlxArray;
-		private var _creatureTimer:Number=CREATURE_TIMER;
+		private var _creatureTimer:Number=1.0;
 		private var _editor:Editor;
 		private var _player:Player;
 		private var _playerBullets:FlxArray;
@@ -215,7 +221,7 @@ package com.noonat.ld15 {
 			else return;
 			killed.kill();
 			++killed.chain.count;
-			var score:int = SCORE_CREATURE * killed.chain.count;
+			var score:int = SCORE_CREATURE * Math.min(killed.chain.count, 3);
 			var scoreText:Array = [];
 			scoreText.push(String(score)+' CHAIN');
 			killed.setText(scoreText.join('\n'));
@@ -223,15 +229,23 @@ package com.noonat.ld15 {
 		}
 		
 		override public function update():void {
+			var i:uint, j:uint;
+			
 			_creatureTimer -= FlxG.elapsed;
 			if (_creatureTimer <= 0) {
-				_creatureTimer = CREATURE_TIMER;
+				for (i=0; i<CREATURE_TIMERS.length; ++i) {
+					if (FlxG.score >= CREATURE_TIMERS[i][0]) {
+						_creatureTimer = CREATURE_TIMERS[i][1];
+						Creature._baseDownSpeed = CREATURE_TIMERS[i][2];
+						break;
+					}
+				}
 				newCreature();
 			}
 			var b:Bullet;
 			
 			// disable the bullets before the update
-			for (var i:uint=0; i < _playerBullets.length; ++i) {
+			for (i=0; i < _playerBullets.length; ++i) {
 				if (_playerBullets[i]) _playerBullets[i].active = false;
 			}
 			
@@ -249,7 +263,7 @@ package com.noonat.ld15 {
 			}
 			// tick over the bullets a couple times
 			// we have to tick these manually because of collision issues
-			for (var j:uint=0; j < 16; ++j) {
+			for (j=0; j < 16; ++j) {
 				for (i=0; i < _playerBullets.length; ++i) {
 					b = _playerBullets[i];
 					if (b && b.exists && b.active) b.update();
