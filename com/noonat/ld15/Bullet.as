@@ -8,10 +8,12 @@ package com.noonat.ld15 {
 		public const GRAVITY:Number = 120;
 		public const SPEED:Number = 25;
 		public const SIZE:uint = 6;
+		public var bounces:int = 0;
 		private var _explosion:FlxEmitter;
 		private var _explosionSprites:FlxArray;
 		private var _life:int;
 		private var _light:Light;
+		private var _spawnTime:Number;
 		
 		public function Bullet():void {
 			super(null, 0, 0, false, false, SIZE, SIZE, COLOR);
@@ -44,6 +46,7 @@ package com.noonat.ld15 {
 		}
 		
 		override public function hitWall(movingRight:Boolean):Boolean {
+			++bounces;
 			hurt(1);
 			if (!dead) velocity.x = -velocity.x * ELASTICITY;
 			return true;
@@ -86,8 +89,13 @@ package com.noonat.ld15 {
 			});
 		}
 		
+		public function get lifeTime():Number {
+			return FlxG.time - _spawnTime;
+		}
+		
 		public function shoot(x:Number, y:Number, nx:Number, ny:Number):void {
 			spawn();
+			this.bounces = 0;
 			this.x = x;
 			this.y = y;
 			velocity.x = nx * SPEED;
@@ -95,6 +103,7 @@ package com.noonat.ld15 {
 			_life = 2;
 			_light.scale = SIZE*4;
 			_light.xy(this.x, this.y);
+			_spawnTime = FlxG.time;
 		}
 		
 		override public function spawn():void { super.spawn(); _light.spawn(); }

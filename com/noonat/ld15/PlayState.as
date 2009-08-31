@@ -20,6 +20,7 @@ package com.noonat.ld15 {
 		private var _editor:Editor;
 		private var _player:Player;
 		private var _playerBullets:FlxArray;
+		private var _scoreText:FlxText;
 		
 		function PlayState():void {
 			super();
@@ -124,6 +125,9 @@ package com.noonat.ld15 {
 			var ls:Number = 100;
 			var la:Number = 0.3;
 			_creatures = new FlxArray();
+
+			_scoreText = new FlxText(0, FlxG.height - 32, FlxG.width, 80, "Score:"+FlxG.score, 0xffffff, null, 16, "center");
+			this.add(_scoreText);
 		}
 		
 		public function newBlock(x:int, y:int, w:int, h:int, color:uint=0xff333333, alpha:Boolean=false):Block {
@@ -149,8 +153,33 @@ package com.noonat.ld15 {
 			_editor.render();
 		}
 		
+		private const SCORE_CREATURE:int = 100;
+		private const SCORE_MED_SHOT_MUL:int = 2;
+		private const SCORE_LONG_SHOT_MUL:int = 4;
+		private const SCORE_BOUNCE_MUL:int = 4;
+		
 		internal function _onCreatureHitBullet(creature:Creature, bullet:Bullet):void {
 			if (!creature.dying) {
+				var score:int = SCORE_CREATURE;
+				var scoreText:Array = [];
+				if (bullet.lifeTime > 4) {
+					score *= SCORE_LONG_SHOT_MUL;
+					scoreText.push('x'+SCORE_LONG_SHOT_MUL+' LONG SHOT');
+				}
+				else if (bullet.lifeTime > 2) {
+					score *= SCORE_MED_SHOT_MUL;
+					scoreText.push('x'+SCORE_MED_SHOT_MUL+' MED SHOT');
+				}
+				if (bullet.bounces > 0) {
+					score *= SCORE_BOUNCE_MUL * bullet.bounces;
+					scoreText.push(
+						'x'+(SCORE_BOUNCE_MUL*bullet.bounces)+
+						' '+bullet.bounces+
+						' '+(bullet.bounces === 1 ? 'BOUNCE':'BOUNCES'));
+				}
+				scoreText.push(String(score)+' PTS');
+				creature.setText(scoreText.join('\n'));
+				FlxG.score += score;
 				creature.kill();
 				creature.velocity.x += bullet.velocity.x;
 				creature.velocity.y += bullet.velocity.y;
@@ -225,6 +254,7 @@ package com.noonat.ld15 {
 					});
 				}
 			}
+			_scoreText.setText('Score: '+ FlxG.score);
 		}
 	}
 }

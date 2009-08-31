@@ -22,6 +22,7 @@ package com.noonat.ld15 {
 		private var _attacking:Building;
 		private var _attackTime:Number;
 		private var _nextAttackTime:Number=0;
+		private var _text:FlxText;
 		
 		public function Creature() {
 			super(null, 0, 0, false, false, 20, 20, 0x00000000);
@@ -90,6 +91,7 @@ package com.noonat.ld15 {
 		}
 		
 		override public function kill():void {
+			if (dead || dying) return;
 			maxVelocity.y = 80;
 			dying = true;
 			_explode(0.6);
@@ -138,6 +140,33 @@ package com.noonat.ld15 {
 				FlxG.buffer.draw(_sh);
 			}
 			super.render();
+		}
+		
+		public function setText(text:String):void {
+			var ty:Number = y - text.split('\n').length * 10;
+			if (!_text) {
+				_text = new FlxText(x, ty, 300, 80, text, 0xffffffff, null, 6, 'left', 0);
+				FlxG.state.add(_text);
+			}
+			else {
+				_text.setText(text);
+				_text.x = x;
+				_text.y = ty;
+			}
+			_text.visible = true;
+			Tweener.removeTweens(_text);
+			Tweener.addTween(_text, {
+				y:_text.y-20, time:1.0, transition:'linear',
+				onComplete: function():void {
+					_text.visible = false;
+					/*Tweener.addTween(_text, {
+						y:_text.y+FlxG.height, time:0.2, transition:'linear',
+						onComplete: function():void {
+							_text.visible = false;
+						}
+					});*/
+				}
+			})
 		}
 		
 		override public function spawn():void {
