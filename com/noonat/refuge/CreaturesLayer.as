@@ -24,11 +24,12 @@ package com.noonat.refuge {
 		}
 		
 		protected function _addCreature():Creature {
-			var creature:Creature = new Creature(this, _lightsLayer);
+			var creature:Creature = creatures.getNonexist() as Creature;
+			if (creature) creature.spawn();
+			else creature = creatures.add(add(new Creature(this, _lightsLayer))) as Creature;
 			creature.angle = Math.random() * 360;
 			creature.x = SPAWN_AREA.x + Math.random() * (SPAWN_AREA.width - creature.width);
 			creature.y = SPAWN_AREA.y + Math.random() * (SPAWN_AREA.height - creature.height);
-			creatures.add(add(creature));
 			return creature;
 		}
 		

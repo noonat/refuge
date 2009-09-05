@@ -125,19 +125,22 @@ package com.noonat.refuge {
 		
 		override public function spawn():void {
 			super.spawn();
-			pixels = _pixelsAlive;
-			alpha = 1.0;
+			pixels = _pixelsAlive; alpha = 1.0;
 			acceleration.y = 80;
 			chain = null;
 			dying = false
 			maxVelocity.y = 5;
 			velocity.x = Math.random() * 60 - 30;
+			_attacking = null;
+			_attackTime = 0;
 			_downMultiplier = Math.random();
+			_explosion.kill();
 			_light.kill();
 			_lightBeam.kill();
 			_nextAttackTime = 0;
 			_spawnTime = FlxG.time;
 			_state = STATE_SPAWNING;
+			Tweener.removeTweens(_light);
 		}
 		
 		override public function update():void {
