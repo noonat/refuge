@@ -1,7 +1,8 @@
 package com.noonat.refuge {
-	import com.adamatomic.flixel.*;
-	import flash.display.*;
-	import flash.geom.*;
+	import com.adamatomic.flixel.FlxArray;
+	import com.adamatomic.flixel.FlxG;
+	import com.adamatomic.flixel.FlxLayer;
+	import com.adamatomic.flixel.FlxSprite;
 	
 	public class Player extends FlxSprite {
 		private static const BULLET_COUNT:uint = 1;

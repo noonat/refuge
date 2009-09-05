@@ -1,6 +1,8 @@
 package com.noonat.refuge {
-	import com.adamatomic.flixel.*;
-	import flash.geom.*;
+	import com.adamatomic.flixel.FlxArray;
+	import com.adamatomic.flixel.FlxG;
+	import com.adamatomic.flixel.FlxLayer;
+	import flash.geom.Rectangle;
 	
 	public class CreaturesLayer extends FlxLayer {
 		protected static const SPAWN_AREA:Rectangle = new Rectangle(6*32, -9*32, 3*32, 9*32);

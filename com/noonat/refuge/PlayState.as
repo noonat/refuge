@@ -1,6 +1,9 @@
 package com.noonat.refuge {
 	import caurina.transitions.Tweener;
-	import com.adamatomic.flixel.*;
+	import com.adamatomic.flixel.FlxG;
+	import com.adamatomic.flixel.FlxLayer;
+	import com.adamatomic.flixel.FlxState;
+	import com.adamatomic.flixel.FlxText;
 	import flash.display.BitmapData;
 	import flash.geom.Rectangle;
 	import flash.geom.Point;

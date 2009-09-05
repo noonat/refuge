@@ -1,5 +1,7 @@
 package com.noonat.refuge {
-	import com.adamatomic.flixel.*;
+	import com.adamatomic.flixel.FlxArray;
+	import com.adamatomic.flixel.FlxG;
+	import com.adamatomic.flixel.FlxLayer;
 	import flash.geom.Rectangle;
 	
 	public class Editor extends FlxLayer {

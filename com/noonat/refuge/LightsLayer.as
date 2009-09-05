@@ -1,8 +1,16 @@
 package com.noonat.refuge {
-	import com.adamatomic.flixel.*;
-	import flash.display.*;
+	import com.adamatomic.flixel.FlxArray;
+	import com.adamatomic.flixel.FlxG;
+	import com.adamatomic.flixel.FlxLayer;
+	import flash.display.BitmapData;
+	import flash.display.BitmapDataChannel;
+	import flash.display.GradientType;
+	import flash.display.Shape;
 	import flash.filters.BlurFilter;
-	import flash.geom.*;
+	import flash.geom.ColorTransform;
+	import flash.geom.Matrix;
+	import flash.geom.Point;
+	import flash.geom.Rectangle;
 	
 	public class LightsLayer extends FlxLayer {
 		public static const SCALE:Number = 1/3;

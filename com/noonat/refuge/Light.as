@@ -1,8 +1,10 @@
 package com.noonat.refuge {
 	import caurina.transitions.Tweener;
-	import com.adamatomic.flixel.*;
-	import flash.display.*;
-	import flash.geom.*;
+	import com.adamatomic.flixel.FlxCore;
+	import flash.display.BitmapData;
+	import flash.display.Shape;
+	import flash.geom.ColorTransform;
+	import flash.geom.Matrix;
 	
 	public class Light extends FlxCore {
 		public var alpha:Number = 1.0;
