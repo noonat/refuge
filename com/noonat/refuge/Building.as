@@ -7,7 +7,7 @@ package com.noonat.refuge {
 	import flash.media.Sound;
 	
 	public class Building extends FlxSprite {
-		[Embed(source="../../../data/building_explode.mp3")] private var SndExplode:Class;
+		[Embed(source="../../../data/building_explode.mp3")] public static var SndExplode:Class;
 		protected static var _damageTransform:ColorTransform = new ColorTransform(1, 1, 1, 1, 0, 32, 0);
 		protected var _dying:Boolean = false;
 		protected var _damageTransformCounter:int = 0;
@@ -31,13 +31,13 @@ package com.noonat.refuge {
 			}
 			pixels.unlock();
 			alpha = alpha; // hack to get _pixels to update
-			health = 3;
+			health = 1;
  			_sndExplode = new SndExplode();
 		}
 		
 		override public function hurt(Damage:Number):void {
-			if (dead || _dying) return;
 			_damageTransformCounter = 5;
+			if (dead || _dying) return;
 			health -= Damage;
 			if (health > 0) return;
 			kill();
@@ -51,15 +51,14 @@ package com.noonat.refuge {
 			Tweener.addTween(this, {
 				y:y+height, time:3.0,
 				transition: 'easeInQuad',
-				onComplete: function():void {
-					_superKill();
-				},
+				onComplete: function():void { _killkill(); },
 				onUpdate: function(t:Number):void {
 					if (Math.random() < t*t) x = oldX + Math.floor(Math.random() * 3) - 2;
 					else x = oldX;
 				}
 			});
 		}
+		internal function _killkill():void { super.kill(); }
 		
 		override public function render():void {
 			super.render();
@@ -69,6 +68,5 @@ package com.noonat.refuge {
 			}
 		}
 		
-		internal function _superKill():void { super.kill(); }
 	}
 }
