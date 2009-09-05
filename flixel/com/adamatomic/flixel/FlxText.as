@@ -1,5 +1,7 @@
 package com.adamatomic.flixel
 {
+	import flash.display.BlendMode;
+	import flash.geom.ColorTransform;
 	import flash.geom.Matrix;
 	import flash.geom.Point;
 	import flash.text.TextField;
@@ -9,6 +11,7 @@ package com.adamatomic.flixel
 	public class FlxText extends FlxCore
 	{
 		public var angle:Number;
+		public var colorTransform:ColorTransform;
 		
 		private var _tf:TextField;
 		private var _mtx:Matrix;
@@ -36,6 +39,7 @@ package com.adamatomic.flixel
 			_oa = angle = Angle;
 			width = Width;
 			height = Height;
+			colorTransform = new ColorTransform();
 			
 			if(Font == null)
 				Font = "system";
@@ -55,6 +59,9 @@ package com.adamatomic.flixel
 			_mtx.rotate(Math.PI * 2 * (angle / 360));
 			_mtx.translate(Math.floor(x)+(width>>1),Math.floor(y)+(height>>1));
 		}
+		
+		public function get alpha():Number { return colorTransform.alphaMultiplier; }
+		public function set alpha(value:Number):void { colorTransform.alphaMultiplier = value; }
 		
 		//@desc		Changes the text being displayed
 		//@param	Text	The new string you want to display
@@ -93,7 +100,7 @@ package com.adamatomic.flixel
 		//@desc		Called by the game loop automatically, blits the text object to the screen
 		override public function render():void
 		{
-			FlxG.buffer.draw(_tf,_mtx);
+			FlxG.buffer.draw(_tf,_mtx, colorTransform);
 		}
 	}
 }
