@@ -28,6 +28,7 @@ package com.noonat.refuge {
 		protected static const STATE_SPAWNING:int = 0;
 		protected static const STATE_DESCENDING:int = 1;
 		protected static const STATE_ATTACKING:int = 2;
+		protected static const STATE_WANDERING:int = 3;
 		
 		public var chain:Object;
 		public var dying:Boolean;
@@ -65,17 +66,6 @@ package com.noonat.refuge {
 			spawn();
 		}
 		
-		override public function kill():void {
-			if (dead || dying) return;
-			FlxG.play(_sndHit);
-			maxVelocity.y = 80;
-			dying = true;
-			_explode(0.6);
-			_flash(40);
-			pixels = _pixelsDead;
-			alpha = alpha;
-		}
-		
 		override public function hitFloor():Boolean {
 			if (dying) {
 				FlxG.play(_sndExplode, 0.3);
@@ -89,6 +79,17 @@ package com.noonat.refuge {
 		override public function hitWall(movingRight:Boolean):Boolean {
 			velocity.x *= -1;
 			return true;
+		}
+		
+		override public function kill():void {
+			if (dead || dying) return;
+			FlxG.play(_sndHit);
+			maxVelocity.y = 80;
+			dying = true;
+			_explode(0.6);
+			_flash(40);
+			pixels = _pixelsDead;
+			alpha = alpha;
 		}
 		
 		override public function render():void {
@@ -150,6 +151,7 @@ package com.noonat.refuge {
 			if (dying) maxVelocity.y = 80;
 			else if (_state === STATE_SPAWNING) maxVelocity.y = _downSpeed + Math.min(((64-y)/64)*(80-_downSpeed), (80-_downSpeed));
 			else if (_state === STATE_DESCENDING) maxVelocity.y = _downSpeed;
+			else if (_state === STATE_WANDERING) maxVelocity.y = _downSpeed;
 			else if (_state === STATE_ATTACKING) maxVelocity.y = 0;
 			super.update();
 			if (!dying) {
@@ -161,19 +163,19 @@ package com.noonat.refuge {
 						if (y > 460) _state = STATE_ATTACKING;
 						break;
 					case STATE_ATTACKING:
+						if ((FlxG.state as PlayState).gameOver) {
+							_state = STATE_WANDERING;
+							break;
+						}
 						y = y + Math.sin(FlxG.time - _spawnTime) * 0.1;
 						if (_attacking) {
-							if (FlxG.time > _attackTime) {
-								_flash(20, _attacking.x+_attacking.width*0.5, _attacking.y+_attacking.height*0.5, _lightBeam)
-								_attacking.hurt(1);
-								_attacking = null;
-								_attackTime = 0;
-								_nextAttackTime = FlxG.time + 2;
-							}
+							if (FlxG.time > _attackTime) _beamAttackFinish();
 						}
-						else if (FlxG.time > _nextAttackTime) {
-							_findNextTarget();
-						}
+						else if (FlxG.time > _nextAttackTime) _beamAttackStart();
+						break;
+					case STATE_WANDERING:
+						if (y >= 460 && _downMultiplier > 0) _downMultiplier *= -1;
+						else if (y <= 80 && _downMultiplier < 0) _downMultiplier *= -1;
 						break;
 				}
 			}
@@ -181,12 +183,7 @@ package com.noonat.refuge {
 				_light.xy(x+width/2, y+height/2);
 		}
 		
-		internal function _explode(delay:Number=0.2):void {
-			_explosion._delay = delay;
-			_explosion.reset();
-		}
-		
-		internal function _findNextTarget():void {
+		internal function _beamAttackStart():void {
 			var buildings:FlxArray = (FlxG.state as PlayState).buildingsLayer.buildings;
 			var delta:Number, deltaX:Number, deltaY:Number;
 			var target:Building, targetDelta:Number;
@@ -206,6 +203,19 @@ package com.noonat.refuge {
 				_attacking = target;
 				_attackTime = FlxG.time + 1;
 			}
+		}
+		
+		internal function _beamAttackFinish():void {
+			_flash(20, _attacking.x+_attacking.width*0.5, _attacking.y+_attacking.height*0.5, _lightBeam)
+			_attacking.hurt(1);
+			_attacking = null;
+			_attackTime = 0;
+			_nextAttackTime = FlxG.time + 2;
+		}
+		
+		internal function _explode(delay:Number=0.2):void {
+			_explosion._delay = delay;
+			_explosion.reset();
 		}
 		
 		internal function _flash(radius:Number, X:Number=0, Y:Number=0, light:Light=null):void {

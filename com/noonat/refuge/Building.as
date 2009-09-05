@@ -31,7 +31,7 @@ package com.noonat.refuge {
 			}
 			pixels.unlock();
 			alpha = alpha; // hack to get _pixels to update
-			health = 1;
+			health = 3;
  			_sndExplode = new SndExplode();
 		}
 		

@@ -24,6 +24,7 @@ package com.noonat.refuge {
 		}
 		
 		protected function _addCreature():Creature {
+			if (creatures.length >= 70) return null;
 			var creature:Creature = creatures.getNonexist() as Creature;
 			if (creature) creature.spawn();
 			else creature = creatures.add(add(new Creature(this, _lightsLayer))) as Creature;

@@ -88,7 +88,6 @@ package com.noonat.refuge {
 		}
 		
 		public function onGameOver():void {
-			FlxG.log('angle:' + angle);
 			var _this:Player=this, oldX:Number=x;
 			
 			setTimeout(function():void { FlxG.play(_sndExplode, 0.7) }, 200);
