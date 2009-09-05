@@ -1,14 +1,17 @@
 package com.noonat.ld15 {
 	import caurina.transitions.Tweener;
-	import com.adamatomic.flixel.*;
+	import com.adamatomic.flixel.FlxG;
+	import com.adamatomic.flixel.FlxSprite;
 	import flash.geom.ColorTransform;
 	import flash.geom.Rectangle;
+	import flash.media.Sound;
 	
 	public class Building extends FlxSprite {
 		[Embed(source="../../../data/building_explode.mp3")] private var SndExplode:Class;
-		private var _dying:Boolean = false;
-		private var _health:int = 3;
-		private var _hurtFlag:int=0;
+		protected static var _damageTransform:ColorTransform = new ColorTransform(1, 1, 1, 1, 0, 32, 0);
+		protected var _dying:Boolean = false;
+		protected var _damageTransformCounter:int = 0;
+		protected var _sndExplode:Sound;
 		
 		function Building(X:int, Y:int, W:uint=16, H:uint=16):void {
 			super(null, X, Y, false, false, W, H, 0xff000000);
@@ -28,20 +31,21 @@ package com.noonat.ld15 {
 			}
 			pixels.unlock();
 			alpha = alpha; // hack to get _pixels to update
-			_health = 3;
+			health = 3;
+ 			_sndExplode = new SndExplode();
 		}
 		
 		override public function hurt(Damage:Number):void {
 			if (dead || _dying) return;
-			_health -= Damage;
-			_hurtFlag = 5;
-			if (_health > 0) return;
+			_damageTransformCounter = 5;
+			health -= Damage;
+			if (health > 0) return;
 			kill();
 		}
 		
 		override public function kill():void {
 			if (dead || _dying) return;
-			FlxG.play(SndExplode, 0.7);
+			FlxG.play(_sndExplode, 0.7);
 			_dying = true;
 			var oldX:int = x;
 			Tweener.addTween(this, {
@@ -59,14 +63,12 @@ package com.noonat.ld15 {
 		
 		override public function render():void {
 			super.render();
-			if (_hurtFlag) {
-				--_hurtFlag;
-				FlxG.buffer.colorTransform(new Rectangle(x, y, width, height), _hurtTransform);
+			if (_damageTransformCounter) {
+				--_damageTransformCounter;
+				FlxG.buffer.colorTransform(new Rectangle(x, y, width, height), _damageTransform);
 			}
 		}
 		
 		internal function _superKill():void { super.kill(); }
-		
-		private static var _hurtTransform:ColorTransform = new ColorTransform(1, 1, 1, 1, 0, 32, 0);
 	}
 }

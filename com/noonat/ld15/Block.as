@@ -1,14 +1,15 @@
 package com.noonat.ld15 {
-	import com.adamatomic.flixel.*;
+	import com.adamatomic.flixel.FlxCore;
+	import com.adamatomic.flixel.FlxG;
 	import flash.display.BitmapData;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	
 	public class Block extends FlxCore {
-		public var _pixels:BitmapData;
-		public var _alpha:Boolean;
-		public var _rect:Rectangle;
-		public var _p:Point = new Point(0, 0);
+		protected var _pixels:BitmapData;
+		protected var _alpha:Boolean;
+		protected var _rect:Rectangle;
+		protected var _p:Point = new Point(0, 0);
 		
 		function Block(X:Number, Y:Number, Width:Number, Height:Number, Color:uint, Alpha:Boolean=false):void {
 			super();

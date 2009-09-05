@@ -5,13 +5,13 @@ package com.noonat.ld15 {
 	import flash.geom.*;
 	
 	public class Light extends FlxCore {
-		public var alpha:Number=1.0;
+		public var alpha:Number = 1.0;
 		public var matrix:Matrix;
-		public var radians:Number=0;
+		public var radians:Number = 0;
 		public var shape:Shape;
-		private var _angle:Number=0;
-		private var _transform:Boolean=false;
-		private var _scale:Number=1;
+		private var _angle:Number = 0;
+		private var _transform:Boolean = false;
+		private var _scale:Number = 1;
 		
 		public function Light(X:Number=0, Y:Number=0, Scale:Number=1, Angle:Number=0, Alpha:Number=1.0) {
 			super();
@@ -29,7 +29,7 @@ package com.noonat.ld15 {
 		
 		public function get angle():Number { return _angle; }
 		public function set angle(Angle:Number):void {
-			radians = Angle * (Math.PI / 180) * LightLayer.SCALE;
+			radians = Angle * (Math.PI / 180) * LightsLayer.SCALE;
 			_transform = true;
 		}
 		
@@ -46,7 +46,7 @@ package com.noonat.ld15 {
 		
 		public function get scale():Number { return _scale; }
 		public function set scale(Scale:Number):void {
-			_scale = Scale * LightLayer.SCALE;
+			_scale = Scale * LightsLayer.SCALE;
 			_transform = true;
 		}
 		
@@ -57,8 +57,8 @@ package com.noonat.ld15 {
 		}
 		
 		public function xy(X:Number, Y:Number):void {
-			x = X * LightLayer.SCALE;
-			y = Y * LightLayer.SCALE;
+			x = X * LightsLayer.SCALE;
+			y = Y * LightsLayer.SCALE;
 			_transform = true;
 		}
 	}

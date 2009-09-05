@@ -3,8 +3,8 @@ package {
 	
 	public class Preloader extends FlxFactory {
 		public function Preloader():void {
-			className = "LD15";
-			//myURL = "adamatomic.com/fathom";
+			className = "Refuge";
+			//myURL = "noonat.phuce.com/refuge";
 			super();
 		}
 	}

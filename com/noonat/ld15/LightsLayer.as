@@ -4,9 +4,9 @@ package com.noonat.ld15 {
 	import flash.filters.BlurFilter;
 	import flash.geom.*;
 	
-	public class LightLayer extends FlxLayer {
+	public class LightsLayer extends FlxLayer {
+		public static const SCALE:Number = 1/3;
 		public var ALPHA:uint = 0xcc;
-		public static var SCALE:Number = 1/3;
 		
 		public var alpha:Number = 1.0;
 		private var _lights:FlxArray;
@@ -16,7 +16,7 @@ package com.noonat.ld15 {
 		private var _gradient:Shape;
 		private var _gradientm:Matrix;
 		
-		function LightLayer():void {
+		function LightsLayer():void {
 			_m = new Matrix();
 			_m.scale(Math.floor(1/SCALE), Math.floor(1/SCALE));
 			_p = new Point(0, 0);

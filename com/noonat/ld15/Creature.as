@@ -1,117 +1,84 @@
 package com.noonat.ld15 {
 	import caurina.transitions.Tweener;
-	import com.adamatomic.flixel.*;
-	import flash.display.*;
-	import flash.geom.*;
+	import com.adamatomic.flixel.FlxArray;
+	import com.adamatomic.flixel.FlxG;
+	import com.adamatomic.flixel.FlxLayer;
+	import com.adamatomic.flixel.FlxSprite;
+	import com.adamatomic.flixel.FlxText;
+	import flash.display.BitmapData;
+	import flash.display.CapsStyle;
+	import flash.display.LineScaleMode;
+	import flash.display.Shape;
+	import flash.geom.ColorTransform;
+	import flash.geom.Matrix;
+	import flash.geom.Rectangle;
+	import flash.media.Sound;
 	
 	public class Creature extends FlxSprite {
-		[Embed(source="../../../data/creature_hit.mp3")] private var SndHit:Class;
-		[Embed(source="../../../data/creature_explode.mp3")] private var SndExplode:Class;
-		[Embed(source="../../../data/creature_shoot2.mp3")] private var SndShoot:Class;
+		[Embed(source="../../../data/creature_hit.mp3")] protected var SndHit:Class;
+		[Embed(source="../../../data/creature_explode.mp3")] protected var SndExplode:Class;
+		[Embed(source="../../../data/creature_shoot2.mp3")] protected var SndShoot:Class;
 		
-		private const STATE_SPAWNING:int = 0;
-		private const STATE_DESCENDING:int = 1;
-		private const STATE_ATTACKING:int = 2;
+		public static var BASE_DOWN_SPEED:Number = 20;
+		public static var _shape:Shape = new Shape();
+		protected static const DEAD_TRANSFORM:ColorTransform = new ColorTransform(0.4, 0.6, 0.2, 1.0, 50, 50, 50);
+		protected static const SCALE:int = 4;
+		protected static const SCALED_MATRIX:Matrix = new Matrix(SCALE, 0, 0, SCALE);
+		protected static const SCALED_RECT:Rectangle = new Rectangle(0, 0, SCALE*5, SCALE*5);
+		protected static const STATE_SPAWNING:int = 0;
+		protected static const STATE_DESCENDING:int = 1;
+		protected static const STATE_ATTACKING:int = 2;
 		
-		public var chain:Object = null;
-		public var dying:Boolean = false;
-		private var _explosionSprites:FlxArray = new FlxArray();
-		private var _explosion:FlxEmitter;
-		private var _light:Light;
-		private var _attackLight:Light;
-		private var _downMultiplier:Number;
-		private var _downSpeed:Number;
-		private var _b:uint, _argb:uint;
-		private var _state:uint = STATE_SPAWNING;
-		private var _spawnTime:Number;
+		public var chain:Object;
+		public var dying:Boolean;
+		protected var _attacking:Building;
+		protected var _attackTime:Number;
+		protected var _downMultiplier:Number;
+		protected var _downSpeed:Number;
+		protected var _explosion:CreatureExplosion;
+		protected var _light:Light;
+		protected var _lightBeam:Light;
+		protected var _nextAttackTime:Number;
+		protected var _pixelsAlive:BitmapData;
+		protected var _pixelsDead:BitmapData;
+		protected var _sndExplode:Sound;
+		protected var _sndHit:Sound;
+		protected var _sndShoot:Sound;
+		protected var _spawnTime:Number;
+		protected var _state:uint;
+		protected var _text:FlxText;
 		
-		private var _attacking:Building;
-		private var _attackTime:Number;
-		private var _nextAttackTime:Number=0;
-		private var _text:FlxText;
-		
-		public static var _baseDownSpeed:Number = 20;
-		
-		public function Creature() {
-			super(null, 0, 0, false, false, 20, 20, 0x00000000);
-			pixels = pixels.clone();
+		public function Creature(layer:FlxLayer, lightsLayer:FlxLayer) {
+			super(null, 0, 0, false, false, SCALE*5, SCALE*5, 0x00000000);
+			var brightness:Number = 0.3 + (0.7 * Math.random());
+			_pixelsAlive = pixels = pixels.clone(); // cloned because flixel tries to share bitmaps
+			CreatureBitmaps.drawNext(_pixelsAlive, SCALED_MATRIX);
+			_pixelsAlive.colorTransform(SCALED_RECT, new ColorTransform(brightness, brightness, brightness));
+			_pixelsDead = _pixelsAlive.clone();
+			_pixelsDead.colorTransform(SCALED_RECT, DEAD_TRANSFORM);
+			_explosion = new CreatureExplosion(brightness, layer);
+			_light = lightsLayer.add(new Light(0, 0, 1, 0)) as Light;
+			_lightBeam = lightsLayer.add(new Light(0, 0, 1, 0)) as Light;
+			_sndExplode = new SndExplode();
+			_sndHit = new SndHit();
+			_sndShoot = new SndShoot();
 			spawn();
-			
-			alpha = 1.0;
-			acceleration.y = 80;
-			maxVelocity.y = 5;
-			velocity.x = Math.random() * 60 - 30;
-			
-			_downMultiplier = Math.random();
-			
-			var g:Number=0xff669933;
-			_explosionSprites.add(new FlxSprite(null,0,0,false,false,3,3,g));
-			_explosionSprites.add(new FlxSprite(null,0,0,false,false,3,3,g));
-			_explosionSprites.add(new FlxSprite(null,0,0,false,false,4,4,g));
-			_explosionSprites.add(new FlxSprite(null,0,0,false,false,6,6,g));
-			_explosionSprites.add(new FlxSprite(null,0,0,false,false,3,3,_argb));
-			_explosionSprites.add(new FlxSprite(null,0,0,false,false,4,4,_argb));
-			_explosionSprites.add(new FlxSprite(null,0,0,false,false,4,4,_argb));
-			_explosionSprites.add(new FlxSprite(null,0,0,false,false,6,6,_argb));
-			for (var i:uint=0; i < _explosionSprites.length; ++i) FlxG.state.add(_explosionSprites[i]);
-			_explosion = FlxG.state.add(new FlxEmitter(
-				0, 0, // x, y
-				width/2, height/2, // w, h
-				_explosionSprites, // sprites
-				0.2, // delay
-				-10, 10, // min vx, max vx
-				0, 50, // min vy, max vy
-				-720, 720, // min max rot
-				20, // gravity,
-				0, // drag
-				null, 0, false // sheet, quantity, multiple
-			)) as FlxEmitter;
-			_explosion.kill();
-			
-			_light = new Light(0, 0, 1, 0);
-			_light.kill();
-			(FlxG.state as PlayState).lights.add(_light);
-			
-			_attackLight = new Light(0, 0, 1, 0);
-			_attackLight.kill();
-			(FlxG.state as PlayState).lights.add(_attackLight);
-			
-			_spawnTime = FlxG.time;
-		}
-		
-		internal function _explode(delay:Number=0.2):void {
-			_explosion._delay = delay;
-			_explosion.reset();
-		}
-		
-		internal function _flash(radius:Number, X:Number=0, Y:Number=0, light:Light=null):void {
-			if (!light) light = _light;
-			light.spawn();
-			light.xy(X||x, Y||y);
-			light.scale = radius;
-			Tweener.addTween(light, {
-				scale:1, time:2,
-				transition: 'linear',
-				onComplete: function():void {
-					light.kill();
-				}
-			});
 		}
 		
 		override public function kill():void {
 			if (dead || dying) return;
-			FlxG.play(SndHit);
+			FlxG.play(_sndHit);
 			maxVelocity.y = 80;
 			dying = true;
 			_explode(0.6);
 			_flash(40);
-			pixels.colorTransform(_r, _ct);
+			pixels = _pixelsDead;
 			alpha = alpha;
 		}
 		
 		override public function hitFloor():Boolean {
 			if (dying) {
-				FlxG.play(SndExplode, 0.4);
+				FlxG.play(_sndExplode, 0.3);
 				super.kill();
 				_explode(-1.5);
 				_flash(60);
@@ -124,30 +91,13 @@ package com.noonat.ld15 {
 			return true;
 		}
 		
-		public function redraw():void {
-			// draw the 5x5 sprite
-			var i:uint = _next++;
-			if (_next >= _bits.length) _next = 0;
-			_pxls.fillRect(_pxlsr, 0x00000000);
-			_b = 75 + Math.floor(Math.random() * (255 - 75));
-			_argb = 0xff000000 | (_b << 16) | (_b << 8) | _b;
-			for (var y:uint=0; y < 5; ++y) {
-				for (var x:uint=0; x < 5; ++x) {
-					if (_bits[i][y][x]) _pxls.setPixel32(x, y, _argb);
-				}
-			}
-			
-			// blit it into the bigger one
-			pixels.draw(_pxls, _pxlsm);
-		}
-		
 		override public function render():void {
 			if (!dying && !dead && _attacking) {
-				_sh.graphics.clear();
-				_sh.graphics.lineStyle(3, 0xff006600, 0.5, true, LineScaleMode.NORMAL, CapsStyle.SQUARE);
-				_sh.graphics.moveTo(x+width/2, y+height/2);
-				_sh.graphics.lineTo(_attacking.x+_attacking.width/2, _attacking.y+_attacking.height/2);
-				FlxG.buffer.draw(_sh);
+				_shape.graphics.clear();
+				_shape.graphics.lineStyle(3, 0xff006600, 0.5, true, LineScaleMode.NORMAL, CapsStyle.SQUARE);
+				_shape.graphics.moveTo(x+width/2, y+height/2);
+				_shape.graphics.lineTo(_attacking.x+_attacking.width/2, _attacking.y+_attacking.height/2);
+				FlxG.buffer.draw(_shape);
 			}
 			super.render();
 		}
@@ -169,23 +119,29 @@ package com.noonat.ld15 {
 				y:_text.y-20, time:1.0, transition:'linear',
 				onComplete: function():void {
 					_text.visible = false;
-					/*Tweener.addTween(_text, {
-						y:_text.y+FlxG.height, time:0.2, transition:'linear',
-						onComplete: function():void {
-							_text.visible = false;
-						}
-					});*/
 				}
 			})
 		}
 		
 		override public function spawn():void {
 			super.spawn();
-			redraw();
+			pixels = _pixelsAlive;
+			alpha = 1.0;
+			acceleration.y = 80;
+			chain = null;
+			dying = false
+			maxVelocity.y = 5;
+			velocity.x = Math.random() * 60 - 30;
+			_downMultiplier = Math.random();
+			_light.kill();
+			_lightBeam.kill();
+			_nextAttackTime = 0;
+			_spawnTime = FlxG.time;
+			_state = STATE_SPAWNING;
 		}
 		
 		override public function update():void {
-			_downSpeed = 5 + _downMultiplier * _baseDownSpeed;
+			_downSpeed = 5 + _downMultiplier * BASE_DOWN_SPEED;
 			_explosion.x = x;
 			_explosion.y = y;
 			if (dying) maxVelocity.y = 80;
@@ -205,7 +161,7 @@ package com.noonat.ld15 {
 						y = y + Math.sin(FlxG.time - _spawnTime) * 0.1;
 						if (_attacking) {
 							if (FlxG.time > _attackTime) {
-								_flash(20, _attacking.x, _attacking.y, _attackLight)
+								_flash(20, _attacking.x, _attacking.y, _lightBeam)
 								_attacking.hurt(1);
 								_attacking = null;
 								_attackTime = 0;
@@ -222,8 +178,13 @@ package com.noonat.ld15 {
 				_light.xy(x+width/2, y+height/2);
 		}
 		
+		internal function _explode(delay:Number=0.2):void {
+			_explosion._delay = delay;
+			_explosion.reset();
+		}
+		
 		internal function _findNextTarget():void {
-			var buildings:FlxArray = (FlxG.state as PlayState).buildings;
+			var buildings:FlxArray = (FlxG.state as PlayState).buildingsLayer.buildings;
 			var delta:Number, deltaX:Number, deltaY:Number;
 			var target:Building, targetDelta:Number;
 			for (var i:uint=0; i < buildings.length; ++i) {
@@ -238,64 +199,24 @@ package com.noonat.ld15 {
 				}
 			}
 			if (target) {
-				FlxG.play(SndShoot, 0.2);
+				FlxG.play(_sndShoot, 0.2);
 				_attacking = target;
 				_attackTime = FlxG.time + 1;
 			}
 		}
-
-		private static var _bits:Array = [
-			[[1,1,1,1,1],
-			 [1,1,1,1,1],
-			 [1,1,0,1,1],
-			 [1,1,1,1,1],
-			 [0,1,0,1,0]],
-			
-			[[0,0,1,0,0],
-			 [1,1,0,1,1],
-			 [0,1,1,1,0],
-			 [0,1,0,1,0],
-			 [1,0,0,0,1]],
-			
-			[[0,0,1,0,0],
-			 [1,1,0,1,1],
-			 [1,1,1,1,1],
-			 [0,1,0,1,0],
-			 [0,0,0,0,0]],
-			
-			[[1,1,1,1,1],
-			 [1,0,1,0,1],
-			 [1,1,1,1,1],
-			 [0,1,0,1,0],
-			 [0,1,0,1,0]],
-			
-			[[0,0,1,0,0],
-			 [0,1,1,1,0],
-			 [1,0,1,0,1],
-			 [1,1,1,1,1],
-			 [0,1,0,1,0]],
-			
-			[[0,1,1,1,0],
-			 [0,1,0,1,0],
-			 [0,1,1,1,0],
-			 [1,1,1,1,1],
-			 [1,0,1,0,1]],
-
-			/*
-			[[],
-			 [],
-			 [],
-			 [],
-			 []],
-			
-			*/
-		];
-		private static var _next:uint=0;
-		private static var _pxls:BitmapData = new BitmapData(5, 5, true, 0x00000000);
-		private static var _pxlsm:Matrix = new Matrix(4, 0, 0, 4);
-		private static var _pxlsr:Rectangle = new Rectangle(0, 0, 5, 5);
-		private static var _r:Rectangle = new Rectangle(0, 0, 20, 20);
-		private static var _ct:ColorTransform = new ColorTransform(0.4, 0.6, 0.2, 1.0, 50, 50, 50);
-		private static var _sh:Shape = new Shape();
+		
+		internal function _flash(radius:Number, X:Number=0, Y:Number=0, light:Light=null):void {
+			if (!light) light = _light;
+			light.spawn();
+			light.xy(X||x, Y||y);
+			light.scale = radius;
+			Tweener.addTween(light, {
+				scale:1, time:2,
+				transition: 'linear',
+				onComplete: function():void {
+					light.kill();
+				}
+			});
+		}
 	}
 }
