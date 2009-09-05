@@ -224,11 +224,8 @@ package com.noonat.refuge {
 			light.xy(X||x, Y||y);
 			light.scale = radius;
 			Tweener.addTween(light, {
-				scale:0, time:0.05,
-				transition: 'linear',
-				onComplete: function():void {
-					light.kill();
-				}
+				scale:0, time:0.05, transition: 'linear',
+				onComplete: function():void { light.kill(); }
 			});
 		}
 	}

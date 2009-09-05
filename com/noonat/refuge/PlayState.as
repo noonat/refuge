@@ -22,7 +22,7 @@ package com.noonat.refuge {
 		function PlayState():void {
 			super();
 			
-			lightsLayer = new LightsLayer(1.0/3.0, 0.8);
+			lightsLayer = new LightsLayer(1.0/3.0, 0.7);
 			blocksLayer = new BlocksLayer();
 			buildingsLayer = new BuildingsLayer();
 			creaturesLayer = new CreaturesLayer(lightsLayer);

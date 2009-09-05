@@ -31,7 +31,7 @@ package com.noonat.refuge {
 			_inverseMatrix = new Matrix();
 			_inverseMatrix.scale(scale, scale);
 			_point = new Point(0, 0);
-			_rect = new Rectangle(0, 0, Math.floor(FlxG.width*scale), Math.floor(FlxG.height*scale));
+			_rect = new Rectangle(0, 0, Math.floor(FlxG.width*scale), Math.floor(FlxG.height*scale)+1);
 			_pixels = new BitmapData(_rect.width, _rect.height, true);
 			_alphaPixels = new BitmapData(_rect.width, _rect.height);
 			
@@ -40,10 +40,7 @@ package com.noonat.refuge {
 			_gradientMatrix.createGradientBox(_rect.height * 2, _rect.height * 2, 270 * (Math.PI/180), (_rect.height*2 - _rect.width)*-0.5);
 			_gradient = new Shape();
 			_gradient.graphics.beginGradientFill(GradientType.RADIAL,
-				[0x000000 + Math.floor(0xff * alpha), 0x0000ff],
-				[1, 1],
-				[240, 255],
-				_gradientMatrix);
+				[0x000000 + Math.floor(0xff * alpha), 0x0000ff], [1, 1], [240, 255], _gradientMatrix);
 			_gradient.graphics.drawRect(0, 0, _rect.width, _rect.height);
 			_gradient.graphics.endFill();
 			_gradient.cacheAsBitmap = true;
