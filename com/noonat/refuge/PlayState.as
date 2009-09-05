@@ -16,17 +16,18 @@ package com.noonat.refuge {
 		public var lightsLayer:LightsLayer;
 		public var player:Player;
 		public var playerLayer:FlxLayer;
+		public var uiLayer:UILayer;
 		protected var _editor:Editor;
-		protected var _scoreText:FlxText;
 		
 		function PlayState():void {
 			super();
 			
-			lightsLayer = new LightsLayer();
+			lightsLayer = new LightsLayer(1.0/3.0, 0.8);
 			blocksLayer = new BlocksLayer();
 			buildingsLayer = new BuildingsLayer();
 			creaturesLayer = new CreaturesLayer(lightsLayer);
 			playerLayer = new FlxLayer();
+			uiLayer = new UILayer(lightsLayer);
 			
 			player = new Player(playerLayer, lightsLayer);
 			player.angle = 270;
@@ -38,10 +39,8 @@ package com.noonat.refuge {
 			add(playerLayer);
 			add(buildingsLayer);
 			add(blocksLayer);
+			add(uiLayer);
 			add(lightsLayer);
-			
-			_scoreText = new FlxText(0, FlxG.height - 32, FlxG.width, 80, "Score:"+FlxG.score, 0xffffff, null, 16, "center");
-			add(_scoreText);
 		}
 		
 		public static const EVENT_KILL:String = 'kill';
@@ -81,12 +80,9 @@ package com.noonat.refuge {
 		
 		public function onGameOver():void {
 			gameOver = true;
-			_scoreText.visible = false;
-			add(new FlxText(0, FlxG.height/2, FlxG.width, 80, "GAME OVER\nScore: "+FlxG.score, 0xffffff, null, 16, "center"));
-			Tweener.addTween(lightsLayer, {
-				ALPHA:0xff, time:1,
-				transition:'linear'
-			});
+			player.onGameOver();
+			uiLayer.onGameOver();
+			Tweener.addTween(lightsLayer, {alpha:1.0, time:3, transition:'linear'});
 		}
 		
 		override public function render():void {
@@ -100,7 +96,6 @@ package com.noonat.refuge {
 			player.updateBullets();
 			if (_editor) _editor.update();
 			if (!gameOver && buildingsLayer.buildingsAreAllDead()) onGameOver();
-			_scoreText.setText('Score: '+ FlxG.score);
 		}
 	}
 }
