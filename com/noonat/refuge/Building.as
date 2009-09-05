@@ -1,4 +1,4 @@
-package com.noonat.ld15 {
+package com.noonat.refuge {
 	import caurina.transitions.Tweener;
 	import com.adamatomic.flixel.FlxG;
 	import com.adamatomic.flixel.FlxSprite;

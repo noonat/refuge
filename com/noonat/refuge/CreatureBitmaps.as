@@ -1,4 +1,4 @@
-package com.noonat.ld15 {
+package com.noonat.refuge {
 	import flash.display.BitmapData;
 	import flash.geom.Matrix;
 	

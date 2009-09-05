@@ -1,6 +1,6 @@
 package {
 	import com.adamatomic.flixel.FlxGame;
-	import com.noonat.ld15.PlayState;
+	import com.noonat.refuge.PlayState;
 	
 	[SWF(width="480", height="640", backgroundColor="#111111")]
 	[Frame(factoryClass="Preloader")]
@@ -13,7 +13,7 @@ package {
 		public function Refuge():void
 		{
 			super(480, 640, PlayState, 1, FLIXEL_BACKGROUND, true, FLIXEL_FOREGROUND);
-			help("Jump", "Shoot", "Nothing");
+			help("Shoot", "Shoot", "Nothing");
 		}
 	}
 }

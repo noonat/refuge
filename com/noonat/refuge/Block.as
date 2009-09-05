@@ -1,4 +1,4 @@
-package com.noonat.ld15 {
+package com.noonat.refuge {
 	import com.adamatomic.flixel.FlxCore;
 	import com.adamatomic.flixel.FlxG;
 	import flash.display.BitmapData;

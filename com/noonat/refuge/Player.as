@@ -1,4 +1,4 @@
-package com.noonat.ld15 {
+package com.noonat.refuge {
 	import com.adamatomic.flixel.*;
 	import flash.display.*;
 	import flash.geom.*;
@@ -86,7 +86,7 @@ package com.noonat.ld15 {
 			
 			if (FlxG.kLeft) angle -= FlxG.elapsed * 120;
 			if (FlxG.kRight) angle += FlxG.elapsed * 120;
-			if (FlxG.justPressed(FlxG.A)) _shootBullet();
+			if (FlxG.justPressed(FlxG.A) || FlxG.justPressed(FlxG.B)) _shootBullet();
 			
 			super.update();
 			
