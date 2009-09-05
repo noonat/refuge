@@ -7,8 +7,8 @@ package com.noonat.refuge {
 	import flash.media.Sound;
 	
 	public class Bullet extends FlxSprite {
-		[Embed(source="../../../data/bullet_explode.mp3")] private var SndExplode:Class;
-		[Embed(source="../../../data/bullet_shoot.mp3")] private var SndShoot:Class;
+		[Embed(source="../../../data/bullet_explode.mp3")] public static var SndExplode:Class;
+		[Embed(source="../../../data/bullet_shoot.mp3")] public static var SndShoot:Class;
 		
 		public static const COLOR:uint = 0xffffff00;
 		public static const ELASTICITY:Number = 0.4;
@@ -28,7 +28,7 @@ package com.noonat.refuge {
 			exists = false;
 			finished = false;
 			_explosion = new BulletExplosion(layer);
-			_light = new Light(0, 0, SIZE*4, 0);
+			_light = new Light(0, 0, SIZE*4);
 			_light.kill();
 			lightsLayer.add(_light);
 			_sndExplode = new SndExplode();

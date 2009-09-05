@@ -15,9 +15,9 @@ package com.noonat.refuge {
 	import flash.media.Sound;
 	
 	public class Creature extends FlxSprite {
-		[Embed(source="../../../data/creature_hit.mp3")] protected var SndHit:Class;
-		[Embed(source="../../../data/creature_explode.mp3")] protected var SndExplode:Class;
-		[Embed(source="../../../data/creature_shoot2.mp3")] protected var SndShoot:Class;
+		[Embed(source="../../../data/creature_hit.mp3")] public static var SndHit:Class;
+		[Embed(source="../../../data/creature_explode.mp3")] public static var SndExplode:Class;
+		[Embed(source="../../../data/creature_shoot2.mp3")] public static var SndShoot:Class;
 		
 		public static var BASE_DOWN_SPEED:Number = 20;
 		public static var _shape:Shape = new Shape();
@@ -57,8 +57,8 @@ package com.noonat.refuge {
 			_pixelsDead = _pixelsAlive.clone();
 			_pixelsDead.colorTransform(SCALED_RECT, DEAD_TRANSFORM);
 			_explosion = new CreatureExplosion(brightness, layer);
-			_light = lightsLayer.add(new Light(0, 0, 1, 0)) as Light;
-			_lightBeam = lightsLayer.add(new Light(0, 0, 1, 0)) as Light;
+			_light = lightsLayer.add(new Light()) as Light;
+			_lightBeam = lightsLayer.add(new Light()) as Light;
 			_sndExplode = new SndExplode();
 			_sndHit = new SndHit();
 			_sndShoot = new SndShoot();
@@ -164,7 +164,7 @@ package com.noonat.refuge {
 						y = y + Math.sin(FlxG.time - _spawnTime) * 0.1;
 						if (_attacking) {
 							if (FlxG.time > _attackTime) {
-								_flash(20, _attacking.x, _attacking.y, _lightBeam)
+								_flash(20, _attacking.x+_attacking.width*0.5, _attacking.y+_attacking.height*0.5, _lightBeam)
 								_attacking.hurt(1);
 								_attacking = null;
 								_attackTime = 0;
@@ -214,7 +214,7 @@ package com.noonat.refuge {
 			light.xy(X||x, Y||y);
 			light.scale = radius;
 			Tweener.addTween(light, {
-				scale:1, time:2,
+				scale:0, time:0.05,
 				transition: 'linear',
 				onComplete: function():void {
 					light.kill();

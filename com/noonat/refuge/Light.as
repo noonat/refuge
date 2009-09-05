@@ -2,54 +2,48 @@ package com.noonat.refuge {
 	import caurina.transitions.Tweener;
 	import com.adamatomic.flixel.FlxCore;
 	import flash.display.BitmapData;
+	import flash.display.GradientType;
 	import flash.display.Shape;
 	import flash.geom.ColorTransform;
 	import flash.geom.Matrix;
 	
 	public class Light extends FlxCore {
+		protected static var _colorTransform:ColorTransform;
+		protected static var _defaultShape:Shape;
+		
 		public var alpha:Number = 1.0;
 		public var matrix:Matrix;
-		public var radians:Number = 0;
 		public var shape:Shape;
-		private var _angle:Number = 0;
-		private var _transform:Boolean = false;
-		private var _scale:Number = 1;
+		protected var _angle:Number;
+		protected var _matrix:Matrix;
+		protected var _radians:Number;
+		protected var _scale:Number;
 		
-		public function Light(X:Number=0, Y:Number=0, Scale:Number=1, Angle:Number=0, Alpha:Number=1.0) {
-			super();
-			shape = new Shape();
-			shape.graphics.beginFill(0x000000, 1.0);
-			shape.graphics.drawCircle(0, 0, 1);
-			shape.graphics.endFill();
-			matrix = new Matrix();
-			xy(X, Y);
-			alpha = Alpha;
-			angle = Angle;
-			scale = Scale;
-			visible = false;
-		}
-		
-		public function get angle():Number { return _angle; }
-		public function set angle(Angle:Number):void {
-			radians = Angle * (Math.PI / 180) * LightsLayer.SCALE;
-			_transform = true;
-		}
-		
-		override public function kill():void { super.kill(); }
-		
-		public function renderInto(mask:BitmapData, colorTransform:ColorTransform):void {
-			if (_transform) matrix.createBox(_scale, _scale, radians, x, y);
-			if (alpha != 1.0) {
-				colorTransform.alphaMultiplier = alpha;
-				mask.draw(shape, matrix, colorTransform);
+		public function Light(x:Number=0, y:Number=0, scale:Number=1, alpha:Number=1, angle:Number=0, shape:Shape=null) {
+			if (_colorTransform === null) {
+				_colorTransform = new ColorTransform();
+				_defaultShape = new Shape();
+				_defaultShape.graphics.beginFill(0x000000, 1.0);
+				_defaultShape.graphics.drawCircle(0, 0, 1);
+				_defaultShape.graphics.endFill();
 			}
-			else mask.draw(shape, matrix);
+			super();
+			_matrix = new Matrix();
+			this.alpha = alpha;
+			this.angle = angle;
+			this.scale = scale;
+			this.shape = shape || _defaultShape;
+			this.xy(x, y);
 		}
 		
-		public function get scale():Number { return _scale; }
-		public function set scale(Scale:Number):void {
-			_scale = Scale * LightsLayer.SCALE;
-			_transform = true;
+		public function renderInto(alphaPixels:BitmapData, matrix:Matrix):void {
+			_matrix.createBox(_scale, _scale, _radians, x, y);
+			if (matrix) _matrix.concat(matrix);
+			if (alpha != 1.0) {
+				_colorTransform.alphaMultiplier = alpha;
+				alphaPixels.draw(shape, _matrix, _colorTransform);
+			}
+			else alphaPixels.draw(shape, _matrix);
 		}
 		
 		override public function spawn():void {
@@ -58,10 +52,21 @@ package com.noonat.refuge {
 			alpha = 1.0;
 		}
 		
-		public function xy(X:Number, Y:Number):void {
-			x = X * LightsLayer.SCALE;
-			y = Y * LightsLayer.SCALE;
-			_transform = true;
+		public function get angle():Number { return _angle; }
+		public function set angle(value:Number):void {
+			_angle = value;
+			_radians = angle * (Math.PI / 180);
+		}
+		public function get radians():Number { return _radians; }
+		public function set radians(value:Number):void {
+			_radians = value;
+			_angle = _radians * (180 / Math.PI);
+		}
+		public function get scale():Number { return _scale; }
+		public function set scale(value:Number):void { _scale = value; }
+		public function xy(x:Number, y:Number):void {
+			this.x = x;
+			this.y = y;
 		}
 	}
 }

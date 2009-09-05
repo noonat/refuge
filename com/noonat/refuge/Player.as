@@ -1,21 +1,25 @@
 package com.noonat.refuge {
+	import caurina.transitions.Tweener;
 	import com.adamatomic.flixel.FlxArray;
 	import com.adamatomic.flixel.FlxG;
 	import com.adamatomic.flixel.FlxLayer;
 	import com.adamatomic.flixel.FlxSprite;
+	import flash.media.Sound;
+	import flash.utils.setTimeout;
 	
 	public class Player extends FlxSprite {
-		private static const BULLET_COUNT:uint = 1;
-		private static const COLOR:uint = 0xff2b2213; // brown
-		private static const COLOR_LIGHT:uint = 0xffffff99; // yellow
-		private static const SIZE:uint = 24;
+		protected static const BULLET_COUNT:uint = 1;
+		protected static const COLOR:uint = 0xff2b2213; // brown
+		protected static const COLOR_LIGHT:uint = 0xffffff99; // yellow
+		protected static const SIZE:uint = 24;
 		
-		private var _aim:Number = 0;
-		private var _aimX:Number = 0;
-		private var _aimY:Number = 0;
-		private var _bullets:FlxArray;
-		private var _lights:FlxArray;
-		private var _muzzle:FlxSprite;
+		protected var _aim:Number = 0;
+		protected var _aimX:Number = 0;
+		protected var _aimY:Number = 0;
+		protected var _bullets:FlxArray;
+		protected var _lights:FlxArray;
+		protected var _muzzle:FlxSprite;
+		protected var _sndExplode:Sound;
 		
 		function Player(layer:FlxLayer, lightsLayer:FlxLayer):void {
 			// initialize the player
@@ -35,15 +39,17 @@ package com.noonat.refuge {
 			
 			// give him some lights
 			_lights = new FlxArray();
-			_lights.add(new Light(0, 0, SIZE*2, 0));
-			_lights.add(new Light(0, 0, SIZE*4, 0, 0.3));
-			_lights.add(new Light(0, 0, SIZE*8, 0, 0.2));
-			_lights.add(new Light(0, 0, SIZE*16, 0., 0.1));
+			_lights.add(new Light(0, 0, SIZE*2));
+			_lights.add(new Light(0, 0, SIZE*4, 0.3));
+			_lights.add(new Light(0, 0, SIZE*8, 0.2));
+			_lights.add(new Light(0, 0, SIZE*16, 0.1));
 			for (i=0; i < _lights.length; ++i) lightsLayer.add(_lights[i]);
 			
 			// the muzzle is the little sprite attached to the end of the player turret
 			_muzzle = new FlxSprite(null, 0, 0, false, false, SIZE/4, SIZE/4, COLOR_LIGHT);
 			layer.add(_muzzle);
+			
+			_sndExplode = new Building.SndExplode();
 		}
 		
 		public function disableBullets():void {
@@ -81,13 +87,51 @@ package com.noonat.refuge {
 			return bullet;
 		}
 		
+		public function onGameOver():void {
+			FlxG.log('angle:' + angle);
+			var _this:Player=this, oldX:Number=x;
+			
+			setTimeout(function():void { FlxG.play(_sndExplode, 0.7) }, 200);
+			setTimeout(function():void { FlxG.play(_sndExplode, 0.7) }, 1000);
+			setTimeout(function():void { FlxG.play(_sndExplode, 0.7) }, 2400);
+			
+			// sink into the ground
+			Tweener.addTween(_this, {
+				y:y+height*1.5, time:5, transition:'easeInQuad',
+				onUpdate: function(t:Number):void {
+					if (Math.random() < t*t) x = oldX + Math.floor(Math.random() * 3) - 2;
+					else x = oldX;
+				}
+			});
+			
+			// rotate back to the top
+			Tweener.addTween(_this, {angle:270, time:2, transition:'linear'});
+			
+			// fade out the lights
+			function fadeOutLight(light:Light):void {
+				var baseAlpha:Number = light.alpha;
+				Tweener.addTween(light, {
+					x:light.x, time:5, transition:'easeInQuad',
+					onComplete: function():void { light.alpha = 0.0; light.kill(); },
+					onUpdate: function(t:Number):void { light.alpha = baseAlpha - (t + Math.random()*0.3) * baseAlpha; }
+				});
+			}
+			fadeOutLight(_lights[0]);
+			setTimeout(function():void { fadeOutLight(_lights[1]); }, 1000);
+			setTimeout(function():void { fadeOutLight(_lights[2]); }, 2000);
+			//setTimeout(function():void { fadeOutLight(_lights[3]); }, 3000);
+		}
+		
 		override public function update():void {
+			var state:PlayState = (FlxG.state as PlayState);
+			
+			if (!state.gameOver) {
+				if (FlxG.kLeft) angle = (angle - FlxG.elapsed * 120) % 360;
+				if (FlxG.kRight) angle = (angle + FlxG.elapsed * 120) % 360;
+			}
 			_aimX = Math.cos(angle * (Math.PI / 180));
 			_aimY = Math.sin(angle * (Math.PI / 180));
-			
-			if (FlxG.kLeft) angle -= FlxG.elapsed * 120;
-			if (FlxG.kRight) angle += FlxG.elapsed * 120;
-			if (FlxG.justPressed(FlxG.A) || FlxG.justPressed(FlxG.B)) _shootBullet();
+			if (!state.gameOver && FlxG.justPressed(FlxG.A)) _shootBullet();
 			
 			super.update();
 			

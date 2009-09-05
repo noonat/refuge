@@ -14,53 +14,57 @@ package com.noonat.refuge {
 	
 	public class LightsLayer extends FlxLayer {
 		public static const SCALE:Number = 1/3;
-		public var ALPHA:uint = 0xcc;
 		
-		public var alpha:Number = 1.0;
-		private var _lights:FlxArray;
-		private var _m:Matrix, _p:Point, _r:Rectangle;
-		private var _mask:BitmapData;
-		private var _pixels:BitmapData;
-		private var _gradient:Shape;
-		private var _gradientm:Matrix;
+		public var alpha:Number;
+		protected var _filter:BlurFilter;
+		protected var _matrix:Matrix, _inverseMatrix:Matrix;
+		protected var _point:Point, _rect:Rectangle;
+		protected var _pixels:BitmapData, _alphaPixels:BitmapData;
+		protected var _gradient:Shape;
+		protected var _gradientMatrix:Matrix;
 		
-		function LightsLayer():void {
-			_m = new Matrix();
-			_m.scale(Math.floor(1/SCALE), Math.floor(1/SCALE));
-			_p = new Point(0, 0);
-			_r = new Rectangle(0, 0, Math.floor(FlxG.width*SCALE), Math.floor(FlxG.height*SCALE));
-			_mask = new BitmapData(_r.width, _r.height);
-			_pixels = new BitmapData(_r.width, _r.height, true, 0xffffffff);
-			_gradientm = new Matrix();
-			_gradientm.createGradientBox(_r.height * 2, _r.height * 2, 270 * (Math.PI/180), (_r.height*2 - _r.width)*-0.5);
+		function LightsLayer(scale:Number=1, alpha:Number=1.0, blurX:Number=8, blurY:Number=8):void {
+			this.alpha = alpha;
+			_filter = new BlurFilter(blurX, blurY);
+			_matrix = new Matrix();
+			_matrix.scale(Math.floor(1/scale), Math.floor(1/scale));
+			_inverseMatrix = new Matrix();
+			_inverseMatrix.scale(scale, scale);
+			_point = new Point(0, 0);
+			_rect = new Rectangle(0, 0, Math.floor(FlxG.width*scale), Math.floor(FlxG.height*scale));
+			_pixels = new BitmapData(_rect.width, _rect.height, true);
+			_alphaPixels = new BitmapData(_rect.width, _rect.height);
+			
+			// vignette gradient overlay
+			_gradientMatrix = new Matrix();
+			_gradientMatrix.createGradientBox(_rect.height * 2, _rect.height * 2, 270 * (Math.PI/180), (_rect.height*2 - _rect.width)*-0.5);
 			_gradient = new Shape();
 			_gradient.graphics.beginGradientFill(GradientType.RADIAL,
-				[0x000000 + (Math.floor(ALPHA * alpha) & 0xff), 0x0000ff],
+				[0x000000 + Math.floor(0xff * alpha), 0x0000ff],
 				[1, 1],
 				[240, 255],
-				_gradientm);
-			_gradient.graphics.drawRect(0, 0, _r.width, _r.height);
+				_gradientMatrix);
+			_gradient.graphics.drawRect(0, 0, _rect.width, _rect.height);
 			_gradient.graphics.endFill();
 			_gradient.cacheAsBitmap = true;
 		}
 		
 		override public function render():void {
 			// draw masks for all the lights
-			var colorTransform:ColorTransform = new ColorTransform();
-			_mask.fillRect(_r, 0xff000000 + (Math.floor(ALPHA * alpha) & 0xff));
-			if (!(FlxG.state as PlayState).gameOver) _mask.draw(_gradient);
-			for (var i:uint=0, l:uint=_children.length; i < l; ++i) {
+			_alphaPixels.fillRect(_rect, Math.floor(0xff * alpha) | 0xff000000);
+			if (!(FlxG.state as PlayState).gameOver) _alphaPixels.draw(_gradient);
+			for (var i:uint=0; i < _children.length; ++i) {
 				var light:Light = _children[i] as Light;
-				if (light.exists) light.renderInto(_mask, colorTransform);
+				if (light.exists) light.renderInto(_alphaPixels, _inverseMatrix);
 			}
 			
 			// blur them
-			_mask.applyFilter(_mask, _r, _p, new BlurFilter(8, 8));
+			_alphaPixels.applyFilter(_alphaPixels, _rect, _point, _filter);
 			
 			// copy it to the alpha channel
-			_pixels.fillRect(_r, 0x00000000);
-			_pixels.copyChannel(_mask, _r, _p, BitmapDataChannel.BLUE, BitmapDataChannel.ALPHA);
-			FlxG.buffer.draw(_pixels, _m);
+			_pixels.fillRect(_rect, 0x00000000);
+			_pixels.copyChannel(_alphaPixels, _rect, _point, BitmapDataChannel.BLUE, BitmapDataChannel.ALPHA);
+			FlxG.buffer.draw(_pixels, _matrix);
 		}
 	}
 }

@@ -5,10 +5,10 @@ package com.noonat.refuge {
 	import flash.geom.Rectangle;
 	
 	public class Editor extends FlxLayer {
-		private var _blocks:FlxArray;
-		private var _block:Boolean=false;
-		private var _bx:Number, _by:Number, _bw:Number, _bh:Number;
-		private var _r:Rectangle;
+		protected var _blocks:FlxArray;
+		protected var _block:Boolean=false;
+		protected var _bx:Number, _by:Number, _bw:Number, _bh:Number;
+		protected var _r:Rectangle;
 		
 		function Editor():void {
 			_blocks = new FlxArray();
