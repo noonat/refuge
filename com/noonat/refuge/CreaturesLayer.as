@@ -50,12 +50,12 @@ package com.noonat.refuge {
 			if (!dead.chain) dead.chain = {chainedCount: 1};
 			alive.chain = dead.chain;
 			alive.kill();
-			++alive.chain.count;
+			++alive.chain.chainedCount;
 			
 			// give them some point for the chained kill
 			(FlxG.state as PlayState).onEvent(
 				PlayState.EVENT_KILL_CHAINED,
-				{killed:alive});
+				{killed:alive, killer:dead});
 		}
 		
 		override public function update():void {
