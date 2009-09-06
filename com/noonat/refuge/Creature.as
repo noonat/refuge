@@ -165,6 +165,8 @@ package com.noonat.refuge {
 					case STATE_ATTACKING:
 						if ((FlxG.state as PlayState).gameOver) {
 							_state = STATE_WANDERING;
+							_attacking = null;
+							_attackTime = _nextAttackTime = 0;
 							break;
 						}
 						y = y + Math.sin(FlxG.time - _spawnTime) * 0.1;
