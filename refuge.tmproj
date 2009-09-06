@@ -25,7 +25,7 @@
 			<key>enabled</key>
 			<true/>
 			<key>value</key>
-			<string>LD15.as</string>
+			<string>Refuge.as</string>
 			<key>variable</key>
 			<string>TM_FLEX_FILE_SPECS</string>
 		</dict>
@@ -33,7 +33,7 @@
 			<key>enabled</key>
 			<true/>
 			<key>value</key>
-			<string>ld15.swf</string>
+			<string>refuge.swf</string>
 			<key>variable</key>
 			<string>TM_FLEX_OUTPUT</string>
 		</dict>
@@ -41,6 +41,6 @@
 	<key>showFileHierarchyDrawer</key>
 	<true/>
 	<key>windowFrame</key>
-	<string>{{257, 110}, {721, 750}}</string>
+	<string>{{433, 99}, {767, 750}}</string>
 </dict>
 </plist>
