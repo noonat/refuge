@@ -118,6 +118,7 @@ package com.adamatomic.flixel
 		//@param	ScreenOffsetY	These variables do exactly that!		
 		public function FlxGame(GameSizeX:uint,GameSizeY:uint,InitialState:Class,Zoom:uint=2,BGColor:Number=0xff000000,ShowFlixelLogo:Boolean=true,FlixelColor:Number=0xffffffff,FlixelSound:Class=null,Frame:Class=null,ScreenOffsetX:uint=0,ScreenOffsetY:uint=0)
 		{
+			FlxG.game = this;
 			_z = Zoom;
 			_gx = ScreenOffsetX;
 			_gy = ScreenOffsetY;
@@ -289,7 +290,7 @@ package com.adamatomic.flixel
 		//@desc		This function is only used by the FlxGame class to do important internal management stuff
 		private function onFocus(event:Event=null):void
 		{
-			flash.ui.Mouse.hide();
+			//flash.ui.Mouse.hide();
 			_focusPopup.visible = false;
 			FlxG.resetKeys();
 			_paused = false;

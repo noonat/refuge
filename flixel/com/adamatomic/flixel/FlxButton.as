@@ -5,6 +5,7 @@ package com.adamatomic.flixel
 	//@desc		A simple button class that calls a function when mouse-clicked
 	public class FlxButton extends FlxCore
 	{
+		private var _alpha:Number;
 		private var _onToggle:Boolean;
 		private var _off:FlxSprite;
 		private var _on:FlxSprite;
@@ -52,6 +53,15 @@ package com.adamatomic.flixel
 			_pressed = false;
 			
 			updatePositions();
+		}
+		
+		public function get alpha():Number { return _alpha; }
+		public function set alpha(value:Number):void {
+			if (value < 0.0) value = 0.0;
+			else if (value > 1.0) value = 1.0;
+			_alpha = value;
+			_off.alpha = _on.alpha = value;
+			_onT.alpha = _offT.alpha = value;
 		}
 		
 		//@desc		Called by the game loop automatically, handles mouseover and click detection
