@@ -12,8 +12,9 @@ package {
 		
 		public function Refuge():void
 		{
-			super(480, 640, PlayState, 1, FLIXEL_BACKGROUND, true, FLIXEL_FOREGROUND);
+			super(480, 640, PlayState, 1, FLIXEL_BACKGROUND, false, FLIXEL_FOREGROUND);
 			help("Shoot", "Shoot", "Nothing");
+			Mochi.initialize(this);
 		}
 	}
 }

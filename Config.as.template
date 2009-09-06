@@ -1,0 +1,9 @@
+// If you want to use leaderboards, you need to copy this file to Config.as and
+// change the variables to match your Mochi values
+
+package {
+    public class Config {
+        public static var MOCHI_GAME_ID:String = '';
+        public static var MOCHI_BOARD_ID:Array = [];
+    }
+}
