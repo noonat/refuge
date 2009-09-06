@@ -1,6 +1,6 @@
 package {
 	import com.adamatomic.flixel.FlxGame;
-	import com.noonat.refuge.PlayState;
+	import com.noonat.refuge.menu.MenuState;
 	import com.noonat.Mochi;
 	
 	[SWF(width="480", height="640", backgroundColor="#111111")]
@@ -13,7 +13,7 @@ package {
 		
 		public function Refuge():void
 		{
-			super(480, 640, PlayState, 1, FLIXEL_BACKGROUND, false, FLIXEL_FOREGROUND);
+			super(480, 640, MenuState, 1, FLIXEL_BACKGROUND, false, FLIXEL_FOREGROUND);
 			help("Shoot", "Shoot", "Nothing");
 			Mochi.initialize(this);
 		}

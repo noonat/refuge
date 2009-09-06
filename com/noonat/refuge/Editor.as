@@ -51,7 +51,7 @@ package com.noonat.refuge {
 			if (_bh < 0) _by += _bh;
 			_bw = Math.abs(_bw);
 			_bh = Math.abs(_bh);
-			_blocks.add(this.add(new Block(_bx, _by, _bw, _bh, 0xffff0000)));
+			_blocks.add(add(new Block(_bx, _by, _bw, _bh, 0xffff0000)));
 			FlxG.log('['+[_bx,_by,_bw,_bh].join(', ')+'],')
 			_block = false;
 		}

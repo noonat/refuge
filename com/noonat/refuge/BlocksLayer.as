@@ -64,7 +64,7 @@ package com.noonat.refuge {
 		protected function _addBlocks(values:Array):void {
 			for (var i:int=0; i < values.length; ++i) {
 				var r:Array = values[i];
-				blocks.add(this.add(new Block(r[0], r[1], r[2], r[3], COLOR)));
+				blocks.add(add(new Block(r[0], r[1], r[2], r[3], COLOR)));
 			}
 		}
 	}
