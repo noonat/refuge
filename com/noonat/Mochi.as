@@ -1,10 +1,11 @@
-package {
+package com.noonat {
 	import com.adamatomic.flixel.FlxG;
 	import com.adamatomic.flixel.FlxGame;
 	import flash.display.MovieClip;
 	import flash.events.Event;
 	import mochi.as3.MochiScores;
 	import mochi.as3.MochiServices;
+	import Config;
 	
 	public class Mochi {
 		protected static var _clip:MovieClip;
@@ -32,6 +33,7 @@ package {
 		}
 		
 		protected static function _connect():void {
+			trace('[com.noonat.Mochi] connecting');
 			if (_connecting || _connected) return;
 			_clip = _game.parent.addChild(new MovieClip()) as MovieClip;
 			MochiServices.connect(Config.MOCHI_GAME_ID, _clip);
@@ -46,6 +48,7 @@ package {
 		}
 		
 		protected static function _onConnected():void {
+			trace('[com.noonat.Mochi] connected');
 			var o:Object = {n: Config.MOCHI_BOARD_ID, f: function (i:Number,s:String):String { if (s.length == 16) return s; return this.f(i+1,s + this.n[i].toString(16));}};
 			var boardID:String = o.f(0, '');
 			MochiScores.setBoardID(boardID);

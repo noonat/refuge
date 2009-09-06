@@ -1,6 +1,13 @@
-This is an entry to LD15 (Caverns).
-http://www.ludumdare.com/
+Refuge is a game developed for Ludum Dare 15. The theme for the compo was "caverns."
 
-noonat@phuce.com
-http://noonat.phuce.com
+Since the competition, I've been adding some slight visual improvements, bug fixes,
+and other things like leaderboards. The original game was built in 48-hours using
+flixel (http://flixel.org) and sfxr.
 
+You can play it online here:
+http://phuce.com/uploads/caverns/compo/
+
+NOTE:
+To build this code, you will have to copy Config.as.template to Config.as and add
+your own Mochi game ID and leaderboard ID. If you don't want to do that, you can
+just comment out the imports and references to com.noonat.Mochi.

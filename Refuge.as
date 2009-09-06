@@ -1,6 +1,7 @@
 package {
 	import com.adamatomic.flixel.FlxGame;
 	import com.noonat.refuge.PlayState;
+	import com.noonat.Mochi;
 	
 	[SWF(width="480", height="640", backgroundColor="#111111")]
 	[Frame(factoryClass="Preloader")]

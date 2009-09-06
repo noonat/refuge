@@ -5,6 +5,7 @@ package com.noonat.refuge {
 	import com.adamatomic.flixel.FlxLayer;
 	import com.adamatomic.flixel.FlxSprite;
 	import com.adamatomic.flixel.FlxText;
+	import com.noonat.Mochi;
 	import flash.display.GradientType;
 	import flash.display.Shape;
 	import flash.geom.Matrix;
