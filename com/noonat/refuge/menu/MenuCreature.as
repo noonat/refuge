@@ -24,7 +24,8 @@ package com.noonat.refuge.menu {
 		
 		override public function spawn():void {
 			super.spawn();
-			acceleration.x = maxVelocity.x = (5 + Math.random() * 10) * alpha;
+			maxVelocity.x = (5 + Math.random() * 10) * alpha;
+			acceleration.x = 100;
 			acceleration.y = 0;
 			this.x = -width;
 			this.y = _baseY = Math.random()*(FlxG.height-128);

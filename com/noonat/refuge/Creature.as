@@ -106,7 +106,7 @@ package com.noonat.refuge {
 		public function setText(text:String):void {
 			var ty:Number = y - text.split('\n').length * 10;
 			if (!_text) {
-				_text = new FlxText(x, ty, 300, 80, text, 0xffffffff, null, 6, 'left', 0);
+				_text = new FlxText(x, ty, 300, 80, text, 0xff999999, null, 6, 'left', 0);
 				FlxG.state.add(_text);
 			}
 			else {
@@ -114,12 +114,16 @@ package com.noonat.refuge {
 				_text.x = x;
 				_text.y = ty;
 			}
+			_text.alpha = 1.0;
 			_text.visible = true;
 			Tweener.removeTweens(_text);
 			Tweener.addTween(_text, {
-				y:_text.y-20, time:1.0, transition:'linear',
+				y:_text.y-10, time:1.0, transition:'linear',
 				onComplete: function():void {
-					_text.visible = false;
+					Tweener.addTween(_text, {
+						alpha:0, time:0.3, transition:'linear',
+						onComplete: function():void { _text.visible = false; }
+					});
 				}
 			})
 		}
