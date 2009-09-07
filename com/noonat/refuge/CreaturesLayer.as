@@ -46,14 +46,9 @@ package com.noonat.refuge {
 				alive = creature1;
 			}
 			else return; // both alive, don't do anything
-			
-			// one is dead and the other is alive, chain death to the alive one
-			if (!dead.chain) dead.chain = {chainedCount: 1};
-			alive.chain = dead.chain;
 			alive.kill();
-			++alive.chain.chainedCount;
 			
-			// give them some point for the chained kill
+			// give playe some points for the chained kill
 			(FlxG.state as PlayState).onEvent(
 				PlayState.EVENT_KILL_CHAINED,
 				{killed:alive, killer:dead});

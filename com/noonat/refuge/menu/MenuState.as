@@ -48,7 +48,7 @@ package com.noonat.refuge.menu {
 				},
 				new FlxSprite(null, 0, 0, false, false, 144, 32, 0xff000000),
 				new FlxText(0, 5, 144, 24, 'Click to Play', 0x15190f, null, 16, 'center'),
-				new FlxText(0, 5, 144, 24, 'Click to Play', 0xffffff, null, 16, 'center')
+				new FlxText(0, 5, 144, 24, 'Click to Play', 0xffff33, null, 16, 'center')
 			);
 			startButton.alpha = 0.0;
 			Tweener.addTween(startButton, {alpha:1, delay:3, time:0.2, transition:'linear'});

@@ -47,34 +47,44 @@ package com.noonat.refuge {
 			add(new Block(0, -1280, 480, 1280, 0xff000000));
 		}
 		
+		public static const EVENT_DEAD:String = 'dead';
 		public static const EVENT_KILL:String = 'kill';
 		public static const EVENT_KILL_CHAINED:String = 'kill_chained';
 		public static const SCORE_CREATURE:int = 100;
 		public static const SCORE_MED_SHOT_MULTIPLIER:int = 2;
 		public static const SCORE_LONG_SHOT_MULTIPLIER:int = 4;
-		public static const SCORE_BOUNCE_MULTIPLIER:int = 4;
+		public static const SCORE_BOUNCE_MULTIPLIER:int = 2;
 		public function onEvent(event:String, args:Object):void {
-			var score:int, scoreText:String='';
+			var multiplier:int, score:int, scoreText:String='';
 			switch (event) {
+			case EVENT_DEAD:
+				break;
+			
 			case EVENT_KILL:
 				score = SCORE_CREATURE;
+				multiplier = 1;
 				if (args.bullet.lifeTime > 4) {
-					score *= SCORE_LONG_SHOT_MULTIPLIER;
+					multiplier += SCORE_LONG_SHOT_MULTIPLIER;
 					scoreText += ' LONG';
 				}
 				else if (args.bullet.lifeTime > 2) {
-					score *= SCORE_MED_SHOT_MULTIPLIER;
+					multiplier += SCORE_MED_SHOT_MULTIPLIER;
 					scoreText += ' MED';
 				}
 				if (args.bullet.bounces > 0) {
-					score *= SCORE_BOUNCE_MULTIPLIER * args.bullet.bounces;
+					multiplier += SCORE_BOUNCE_MULTIPLIER * args.bullet.bounces;
 					if (scoreText.length == 0) scoreText += ' BOUNCE';
 				}
+				score *= multiplier;
+				args.killed.chain = {bounces:args.bullet.bounces, count:1, refCount:1, totalScore:score};
 				scoreText = String(score) + scoreText;
 				break;
 			
 			case EVENT_KILL_CHAINED:
-				score = SCORE_CREATURE * Math.min(args.killed.chain.chainedCount, 3);
+				var chain:Object = args.killed.chain = args.killer.chain;
+				++chain.count;
+				score = SCORE_CREATURE * (Math.min(chain.count, 6) + SCORE_BOUNCE_MULTIPLIER*chain.bounces);
+				chain.totalScore += score;
 				scoreText = String(score) + ' CHAIN';
 				break;
 			}
