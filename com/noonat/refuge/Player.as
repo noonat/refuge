@@ -130,7 +130,9 @@ package com.noonat.refuge {
 			}
 			_aimX = Math.cos(angle * (Math.PI / 180));
 			_aimY = Math.sin(angle * (Math.PI / 180));
-			if (!state.gameOver && FlxG.justPressed(FlxG.A)) _shootBullet();
+			if (!state.gameOver && (FlxG.justPressed(FlxG.A) || FlxG.justPressed(FlxG.B))) {
+				_shootBullet();
+			}
 			
 			super.update();
 			
