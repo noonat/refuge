@@ -57,6 +57,7 @@ package com.noonat.refuge.menu {
 		}
 		
 		override public function render():void {
+			getScreenXY(_point);
 			FlxG.buffer.copyPixels(_pixels, _rect, _point);
 		}
 	}

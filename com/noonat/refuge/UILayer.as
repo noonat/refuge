@@ -11,6 +11,7 @@ package com.noonat.refuge {
 	import flash.geom.Matrix;
 	
 	public class UILayer extends FlxLayer {
+		protected var _instructionsText:FlxText;
 		protected var _gameOverLight:Light;
 		protected var _gameOverText:FlxText;
 		protected var _scoreText:FlxText;
@@ -30,6 +31,14 @@ package com.noonat.refuge {
 			lightsLayer.add(_gameOverLight);
 			
 			var y:int = FlxG.height / 2 - 80;
+			_instructionsText = new FlxText(0, y, FlxG.width, 96, "arrows to aim\nx or c to shoot", 0xffffff, null, 16, "center");
+			_instructionsText.alpha = 0.2;
+			Tweener.addTween(_instructionsText, {
+				alpha:0, delay:5, time:1, transition:'linear',
+				onComplete: function():void { _instructionsText.visible = false; }
+			});
+			add(_instructionsText);
+
 			_gameOverText = new FlxText(0, y, FlxG.width, 96, "GAME OVER\nScore: "+FlxG.score, 0xffffff, null, 32, "center");
 			_gameOverText.alpha = 0.0;
 			_gameOverText.visible = false;

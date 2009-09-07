@@ -22,7 +22,10 @@ package com.noonat.refuge {
 		function PlayState():void {
 			super();
 			
-			lightsLayer = new LightsLayer(1.0/3.0, 0.7);
+			FlxG.scroll.y = 640;
+			Tweener.addTween(FlxG.scroll, {y:0, delay:1, time:1, transition:'easeOutQuad'});
+			
+			lightsLayer = new LightsLayer(1.0/3.0, 0.8);
 			blocksLayer = new BlocksLayer();
 			buildingsLayer = new BuildingsLayer();
 			creaturesLayer = new CreaturesLayer(lightsLayer);
@@ -41,6 +44,7 @@ package com.noonat.refuge {
 			add(blocksLayer);
 			add(uiLayer);
 			add(lightsLayer);
+			add(new Block(0, -1280, 480, 1280, 0xff000000));
 		}
 		
 		public static const EVENT_KILL:String = 'kill';
@@ -82,7 +86,7 @@ package com.noonat.refuge {
 			gameOver = true;
 			player.onGameOver();
 			uiLayer.onGameOver();
-			Tweener.addTween(lightsLayer, {alpha:1.0, time:3, transition:'linear'});
+			Tweener.addTween(lightsLayer, {alpha:1.0, time:2, transition:'linear'});
 		}
 		
 		override public function render():void {

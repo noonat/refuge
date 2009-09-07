@@ -48,7 +48,7 @@ package com.noonat.refuge {
 		
 		override public function render():void {
 			// draw masks for all the lights
-			_alphaPixels.fillRect(_rect, Math.floor(0xff * alpha) | 0xff000000);
+			_alphaPixels.fillRect(_alphaPixels.rect, Math.floor(0xff * alpha) | 0xff000000);
 			if (!(FlxG.state as PlayState).gameOver) _alphaPixels.draw(_gradient);
 			for (var i:uint=0; i < _children.length; ++i) {
 				var light:Light = _children[i] as Light;
@@ -56,11 +56,15 @@ package com.noonat.refuge {
 			}
 			
 			// blur them
-			_alphaPixels.applyFilter(_alphaPixels, _rect, _point, _filter);
+			_alphaPixels.applyFilter(_alphaPixels, _alphaPixels.rect, _point, _filter);
 			
 			// copy it to the alpha channel
-			_pixels.fillRect(_rect, 0x00000000);
-			_pixels.copyChannel(_alphaPixels, _rect, _point, BitmapDataChannel.BLUE, BitmapDataChannel.ALPHA);
+			_pixels.fillRect(_pixels.rect, 0x00000000);
+			_pixels.copyChannel(_alphaPixels, _alphaPixels.rect, _point, BitmapDataChannel.BLUE, BitmapDataChannel.ALPHA);
+			getScreenXY(_point);
+			_matrix.tx = _point.x;
+			_matrix.ty = _point.y;
+			_point.x = _point.y = 0;
 			FlxG.buffer.draw(_pixels, _matrix);
 		}
 	}

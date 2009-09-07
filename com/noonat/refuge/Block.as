@@ -3,13 +3,11 @@ package com.noonat.refuge {
 	import com.adamatomic.flixel.FlxG;
 	import flash.display.BitmapData;
 	import flash.geom.Point;
-	import flash.geom.Rectangle;
 	
 	public class Block extends FlxCore {
-		protected var _pixels:BitmapData;
+		public var pixels:BitmapData;
 		protected var _alpha:Boolean;
-		protected var _rect:Rectangle;
-		protected var _p:Point = new Point(0, 0);
+		protected var _p:Point;
 		
 		function Block(X:Number, Y:Number, Width:Number, Height:Number, Color:uint, Alpha:Boolean=false):void {
 			super();
@@ -17,16 +15,16 @@ package com.noonat.refuge {
 			y = Y;
 			width = Width;
 			height = Height;
-			_rect = new Rectangle(0, 0, width, height);
-			_pixels = new BitmapData(width, height);
-			_pixels.fillRect(_rect, Color);
+			pixels = new BitmapData(width, height);
+			pixels.fillRect(pixels.rect, Color);
 			_alpha = Alpha;
+			_p = new Point(0, 0);
 		}
 		
 		override public function render():void {
-			_p.x = x;
-			_p.y = y;
-			FlxG.buffer.copyPixels(_pixels, _rect, _p, null, null, _alpha);
+			if (!onScreen()) return;
+			getScreenXY(_p);
+			FlxG.buffer.copyPixels(pixels, pixels.rect, _p, null, null, _alpha);
 		}
 	}
 }
