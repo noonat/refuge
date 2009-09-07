@@ -36,7 +36,7 @@ package com.noonat.refuge {
 		}
 		
 		override public function hurt(Damage:Number):void {
-			_damageTransformCounter = 5;
+			_damageTransformCounter = 20;
 			if (dead || _dying) return;
 			health -= Damage;
 			if (health > 0) return;
