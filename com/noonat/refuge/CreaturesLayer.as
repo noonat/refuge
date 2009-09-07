@@ -24,9 +24,10 @@ package com.noonat.refuge {
 		}
 		
 		protected function _addCreature():Creature {
-			if (creatures.length >= 70) return null;
+			var state:PlayState = FlxG.state as PlayState;
 			var creature:Creature = creatures.getNonexist() as Creature;
 			if (creature) creature.spawn();
+			else if (creatures.length >= 70 && state.gameOver) return null;
 			else creature = creatures.add(add(new Creature(this, _lightsLayer))) as Creature;
 			creature.angle = Math.random() * 360;
 			creature.x = SPAWN_AREA.x + Math.random() * (SPAWN_AREA.width - creature.width);
@@ -48,7 +49,7 @@ package com.noonat.refuge {
 			else return; // both alive, don't do anything
 			alive.kill();
 			
-			// give playe some points for the chained kill
+			// give player some points for the chained kill
 			(FlxG.state as PlayState).onEvent(
 				PlayState.EVENT_KILL_CHAINED,
 				{killed:alive, killer:dead});
