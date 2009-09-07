@@ -55,6 +55,7 @@ package com.noonat.refuge {
 		public static const SCORE_LONG_SHOT_MULTIPLIER:int = 4;
 		public static const SCORE_BOUNCE_MULTIPLIER:int = 2;
 		public function onEvent(event:String, args:Object):void {
+			if (gameOver) return;
 			var multiplier:int, score:int, scoreText:String='';
 			switch (event) {
 			case EVENT_DEAD:
