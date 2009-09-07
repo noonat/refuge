@@ -14,31 +14,35 @@ package com.noonat.refuge.menu {
 	import flash.geom.Rectangle;
 	
 	public class MenuState extends FlxState {
+		[Embed(source="../../../../data/cityscape_left.png")] public static var ImgCityscapeLeft:Class;
+		[Embed(source="../../../../data/cityscape_right.png")] public static var ImgCityscapeRight:Class;
+		
 		protected var _blocks:FlxArray;
-		protected var _blackGradient:Shape;
 		protected var _greenGradient:Shape;
 		protected var _smokeLayer:SmokeLayer;
+		protected var _creaturesLayer:MenuCreaturesLayer;
 		
 		function MenuState():void {
 			var matrix:Matrix = new Matrix();
 			super();
 			
-			matrix.createGradientBox(FlxG.width, FlxG.height, 90*(Math.PI/180), 0, -150);
-			_blackGradient = new Shape();
-			_blackGradient.graphics.beginGradientFill(GradientType.LINEAR,
-				[0x000000, 0x000000], [1.0, 0.0], [0, 255], matrix);
-			_blackGradient.graphics.drawRect(0, 0, FlxG.width, FlxG.height);
-			_blackGradient.graphics.endFill();
-			
 			matrix.createGradientBox(FlxG.width, FlxG.height, 90*(Math.PI/180), 0, 0);
 			_greenGradient = new Shape();
 			_greenGradient.graphics.beginGradientFill(GradientType.LINEAR,
-				[0x669933, 0x000000], [1.0, 1.0], [0, 255], matrix);
+				[0x669933, 0x000000], [0.0, 0.5], [0, 255], matrix);
 			_greenGradient.graphics.drawRect(0, 0, FlxG.width, FlxG.height);
 			_greenGradient.graphics.endFill();
+			_greenGradient.cacheAsBitmap = true;
 			
-			// smoke floating behind buildings
+			// smoke
 			_smokeLayer = add(new SmokeLayer()) as SmokeLayer;
+			
+			// creatures
+			_creaturesLayer = add(new MenuCreaturesLayer()) as MenuCreaturesLayer;
+			
+			// buildings
+			add(new FlxSprite(ImgCityscapeLeft, 0, FlxG.height-256, false, false));
+			add(new FlxSprite(ImgCityscapeRight, FlxG.width-200, FlxG.height-256, false, false));
 			
 			// caverns
 			_blocks = new FlxArray();
@@ -50,14 +54,8 @@ package com.noonat.refuge.menu {
 		}
 		
 		override public function render():void {
-			//FlxG.buffer.draw(_greenGradient);
-			FlxG.buffer.draw(_blackGradient);
+			FlxG.buffer.draw(_greenGradient);
 			super.render();
-		}
-		
-		override public function update():void {
-			super.update();
-			_smokeLayer.collideSmoke(_blocks);
 		}
 	}
 }

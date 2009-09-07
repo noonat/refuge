@@ -25,7 +25,7 @@ package com.noonat.refuge.menu {
 			_smokeEmitterRight = _addSmokeEmitter(FlxG.width-200, FlxG.height-128-16, 200, 16, _smokeRight);
 			
 			// for blurring after rendering
-			_filter = new BlurFilter(30, 30, 2);
+			_filter = new BlurFilter(40, 40, 2);
 			_point = new Point(0, 0);
 			_rect = new Rectangle(0, 0, FlxG.width, FlxG.height);
 		}
