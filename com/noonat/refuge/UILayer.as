@@ -52,6 +52,7 @@ package com.noonat.refuge {
 				new FlxText(0, 3, 144, 24, 'Submit Score', 0xffffff, null, 16, 'center'),
 				new FlxText(0, 3, 144, 24, 'Submit Score', 0x000000, null, 16, 'center'));
 			_submitScoreButton.alpha = 0.0;
+			_submitScoreButton.exists = false;
 			_submitScoreButton.visible = false;
 			add(_submitScoreButton);
 			
@@ -66,6 +67,7 @@ package com.noonat.refuge {
 				new FlxText(0, 3, 144, 24, 'Try Again', 0xffffff, null, 16, 'center'),
 				new FlxText(0, 3, 144, 24, 'Try Again', 0x000000, null, 16, 'center'));
 			_tryAgainButton.alpha = 0.0;
+			_tryAgainButton.exists = false;
 			_tryAgainButton.visible = false;
 			add(_tryAgainButton);
 			
@@ -82,6 +84,7 @@ package com.noonat.refuge {
 			Tweener.addTween(_gameOverText, {
 				alpha:1, time:5, transition:'linear',
 				onComplete: function():void {
+					_submitScoreButton.exists = _tryAgainButton.exists = true;
 					_submitScoreButton.visible = _tryAgainButton.visible = true;
 					Tweener.addTween(_submitScoreButton, {alpha:1.0, time:2, transition:'linear'});
 					Tweener.addTween(_tryAgainButton, {alpha:1.0, time:2, transition:'linear'});
